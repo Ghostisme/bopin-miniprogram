@@ -1,0 +1,115 @@
+@import '../../styles/variables.scss';
+
+/**
+ * 粘贴资料弹窗样式 - 现代紫色系
+ *
+ * 采用底部弹出（bottom sheet）布局：遮罩铺满，面板贴底并带上圆角，
+ * 符合小程序移动端「从底部升起」的输入交互直觉。
+ */
+.paste-modal {
+  // 遮罩层:柔和半透明
+  &__mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: $z-modal;
+  }
+
+  // 底部面板:白底带圆角
+  &__panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: $z-modal + 1;
+    background: $bg-card;
+    border-radius: $radius-lg $radius-lg 0 0;
+    padding: $space-lg $space-lg calc(#{$space-lg} + env(safe-area-inset-bottom));
+    box-shadow: $shadow-lg;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $space-sm;
+  }
+
+  &__title {
+    font-size: $font-lg;
+    font-weight: 600;
+    color: $text-primary;
+  }
+
+  &__close {
+    font-size: $font-md;
+    color: $text-secondary;
+    padding: 0 $space-sm;
+  }
+
+  &__desc {
+    display: block;
+    font-size: $font-sm;
+    color: $text-secondary;
+    line-height: 1.6;
+    margin-bottom: $space-md;
+  }
+
+  // 多行输入区:浅紫底色
+  &__textarea {
+    width: 100%;
+    height: 220rpx;
+    box-sizing: border-box;
+    padding: $space-md;
+    background: $primary-pale;
+    border-radius: $radius-md;
+    border: 1rpx solid rgba(231, 153, 176, 0.25);
+    font-size: $font-base;
+    color: $text-primary;
+    line-height: 1.6;
+
+    // 聚焦态:边框加深
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 4rpx rgba(231, 153, 176, 0.12);
+    }
+  }
+
+  &__counter {
+    display: block;
+    text-align: right;
+    font-size: $font-xs;
+    color: $text-tertiary;
+    margin-top: $space-xs;
+    margin-bottom: $space-md;
+  }
+
+  // 主行动按钮:紫色渐变
+  &__submit {
+    height: 88rpx;
+    border-radius: 999rpx;
+    background: $primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: $font-md;
+    font-weight: 600;
+    box-shadow: 0 8rpx 24rpx rgba(231, 153, 176, 0.32);
+    transition: all $transition-fast;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    // 禁用态:灰色
+    &.is-disabled {
+      background: $text-tertiary;
+      opacity: 0.5;
+      box-shadow: none;
+    }
+  }
+}

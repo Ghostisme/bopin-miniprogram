@@ -1,0 +1,70 @@
+@import '../../styles/variables.scss';
+
+/**
+ * 空态样式 - 温柔女性风格
+ *
+ * 居中垂直布局，留足上下留白，让空态在长列表中不显突兀。
+ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx $space-lg;
+
+  &__icon {
+    font-size: 96rpx;
+    line-height: 1;
+    margin-bottom: $space-md;
+    opacity: 0.5;
+    color: $secondary; // 薰衣草紫
+  }
+
+  &__text {
+    font-size: $font-base;
+    color: $text-secondary;
+  }
+
+  &__hint {
+    margin-top: $space-xs;
+    font-size: $font-sm;
+    color: $text-tertiary;
+  }
+
+  // 三点加载动画
+  &__loading {
+    display: flex;
+    align-items: center;
+    gap: 10rpx;
+    margin-bottom: $space-md;
+  }
+
+  &__dot {
+    width: 14rpx;
+    height: 14rpx;
+    border-radius: 50%;
+    background: $primary;
+    animation: empty-bounce 1.2s infinite ease-in-out;
+
+    // 三点错峰跳动，形成经典 loading 节奏
+    &:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    &:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+  }
+}
+
+@keyframes empty-bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.4;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

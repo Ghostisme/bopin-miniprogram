@@ -1,0 +1,258 @@
+@import '../../styles/variables.scss';
+
+.notice-page {
+  min-height: 100vh;
+  padding-bottom: 156rpx;
+  background: $bg-page;
+
+  &__intro {
+    padding: 22rpx $space-md $space-md;
+    background: #fff;
+  }
+
+  &__brand-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20rpx;
+  }
+
+  &__brand {
+    display: block;
+    color: $text-primary;
+    font-size: 44rpx;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  &__brand-note {
+    display: block;
+    margin-top: 6rpx;
+    color: $text-tertiary;
+    font-size: 21rpx;
+  }
+
+  &__city {
+    padding: 12rpx 20rpx;
+    border: 1rpx solid $border-light;
+    border-radius: $radius-pill;
+    color: $text-secondary;
+    font-size: $font-sm;
+  }
+
+  &__role-switch {
+    display: flex;
+    width: 360rpx;
+    height: 64rpx;
+    margin-bottom: 22rpx;
+    padding: 6rpx;
+    border-radius: $radius-pill;
+    background: #f2f2f5;
+  }
+
+  &__role {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    border-radius: $radius-pill;
+    color: $text-secondary;
+    font-size: $font-sm;
+
+    &.is-active {
+      background: #fff;
+      box-shadow: 0 4rpx 14rpx rgba(38, 35, 42, 0.08);
+      color: $secondary;
+      font-weight: 700;
+    }
+  }
+
+  &__hero {
+    position: relative;
+    display: flex;
+    min-height: 224rpx;
+    align-items: center;
+    overflow: hidden;
+    padding: 30rpx 28rpx;
+    border-radius: $radius-lg;
+    background: $primary;
+  }
+
+  &__hero-copy {
+    position: relative;
+    z-index: 2;
+    width: 66%;
+  }
+
+  &__hero-kicker,
+  &__hero-title,
+  &__hero-subtitle {
+    display: block;
+  }
+
+  &__hero-kicker {
+    margin-bottom: 12rpx;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 21rpx;
+    font-weight: 600;
+  }
+
+  &__hero-title {
+    max-width: 380rpx;
+    color: #fff;
+    font-size: 38rpx;
+    font-weight: 800;
+    line-height: 1.32;
+  }
+
+  &__hero-subtitle {
+    margin-top: 18rpx;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 23rpx;
+  }
+
+  &__talent-stack {
+    position: absolute;
+    right: 18rpx;
+    bottom: -18rpx;
+    width: 220rpx;
+    height: 190rpx;
+  }
+
+  &__talent-card {
+    position: absolute;
+    display: flex;
+    width: 96rpx;
+    height: 142rpx;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 16rpx;
+    border: 3rpx solid rgba(255, 255, 255, 0.88);
+    border-radius: 14rpx;
+    box-shadow: 0 14rpx 30rpx rgba(83, 37, 58, 0.2);
+    font-size: 20rpx;
+    font-weight: 700;
+  }
+
+  .talent-card--back {
+    right: 100rpx;
+    bottom: 6rpx;
+    transform: rotate(-12deg);
+    background: #fff;
+    color: $secondary;
+  }
+
+  .talent-card--mid {
+    right: 48rpx;
+    bottom: 20rpx;
+    transform: rotate(4deg);
+    background: #27242c;
+    color: #fff;
+  }
+
+  .talent-card--front {
+    right: 0;
+    bottom: 2rpx;
+    transform: rotate(13deg);
+    background: #ffe4ec;
+    color: $secondary;
+  }
+
+  &__quick-actions {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 26rpx $space-md 24rpx;
+    border-top: 1rpx solid $border-light;
+    border-bottom: 1rpx solid $border-light;
+    background: #fff;
+  }
+
+  &__quick {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  &__quick-icon {
+    display: flex;
+    width: 70rpx;
+    height: 70rpx;
+    align-items: center;
+    justify-content: center;
+    border-radius: 22rpx;
+    font-size: 24rpx;
+    font-weight: 800;
+  }
+
+  .quick-icon--salary {
+    background: #fff0f4;
+    color: $secondary;
+  }
+
+  .quick-icon--nearby {
+    background: #edf7f2;
+    color: $success;
+  }
+
+  .quick-icon--ai {
+    background: #f2eef6;
+    color: #806a92;
+  }
+
+  .quick-icon--publish {
+    background: #fff4e8;
+    color: #bd7e3f;
+  }
+
+  &__quick-label {
+    margin-top: 12rpx;
+    color: $text-secondary;
+    font-size: 23rpx;
+    white-space: nowrap;
+  }
+
+  &__sticky {
+    position: sticky;
+    top: 0;
+    z-index: $z-sticky;
+    border-bottom: 1rpx solid $border-light;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 8rpx 20rpx rgba(39, 34, 45, 0.04);
+  }
+
+  &__list {
+    padding: 24rpx $space-md;
+  }
+
+  &__list-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin: 4rpx 2rpx 22rpx;
+  }
+
+  &__list-title,
+  &__list-subtitle {
+    display: block;
+  }
+
+  &__list-title {
+    color: $text-primary;
+    font-size: $font-xl;
+    font-weight: 800;
+  }
+
+  &__list-subtitle {
+    margin-top: 5rpx;
+    color: $text-tertiary;
+    font-size: 21rpx;
+  }
+
+  &__list-count {
+    color: $secondary;
+    font-size: 22rpx;
+    font-weight: 600;
+  }
+
+}

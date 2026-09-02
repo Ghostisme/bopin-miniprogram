@@ -1,0 +1,204 @@
+@import '../../styles/variables.scss';
+
+.notice-card {
+  margin-bottom: 20rpx;
+  padding: 24rpx;
+  border: 1rpx solid $border-light;
+  border-radius: $radius-md;
+  background: $bg-card;
+  box-shadow: $shadow-sm;
+  transition: transform $transition-fast, box-shadow $transition-fast;
+
+  &:active {
+    transform: translateY(-2rpx);
+    box-shadow: $shadow-base;
+  }
+
+  &__signal-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18rpx;
+  }
+
+  &__match {
+    display: flex;
+    align-items: center;
+    gap: 8rpx;
+    color: $secondary;
+    font-size: 21rpx;
+    font-weight: 700;
+  }
+
+  &__match-dot {
+    width: 10rpx;
+    height: 10rpx;
+    border-radius: 50%;
+    background: $primary;
+    box-shadow: 0 0 0 6rpx $primary-pale;
+  }
+
+  &__time {
+    color: $text-tertiary;
+    font-size: 21rpx;
+  }
+
+  &__header {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+  }
+
+  &__publisher-mark {
+    display: flex;
+    width: 72rpx;
+    height: 72rpx;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border: 1rpx solid #f3d6df;
+    border-radius: 18rpx;
+    background: $primary-pale;
+    color: $secondary;
+    font-size: $font-lg;
+    font-weight: 800;
+  }
+
+  &__role-main {
+    min-width: 0;
+    flex: 1;
+    margin-left: 18rpx;
+  }
+
+  &__title-wrap {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 10rpx;
+  }
+
+  &__title {
+    overflow: hidden;
+    color: $text-primary;
+    font-size: $font-lg;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__urgent {
+    flex-shrink: 0;
+    padding: 3rpx 10rpx;
+    border-radius: $radius-sm;
+    background: $error-light;
+    color: $error;
+    font-size: 19rpx;
+    font-weight: 700;
+  }
+
+  &__company {
+    display: block;
+    overflow: hidden;
+    margin-top: 7rpx;
+    color: $text-tertiary;
+    font-size: 21rpx;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__pay {
+    display: flex;
+    flex-shrink: 0;
+    align-items: flex-end;
+    flex-direction: column;
+    margin-left: 14rpx;
+  }
+
+  &__salary {
+    color: $secondary;
+    font-size: $font-lg;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  &__jobtype {
+    margin-top: 5rpx;
+    color: $text-tertiary;
+    font-size: 20rpx;
+  }
+
+  &__duty {
+    display: -webkit-box;
+    overflow: hidden;
+    margin-top: 20rpx;
+    color: $text-secondary;
+    font-size: $font-sm;
+    line-height: 1.6;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10rpx;
+    margin-top: 16rpx;
+  }
+
+  &__tag {
+    padding: 6rpx 12rpx;
+    border-radius: 6rpx;
+    background: #f6f5f7;
+    color: $text-secondary;
+    font-size: 20rpx;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20rpx;
+    padding-top: 18rpx;
+    border-top: 1rpx solid $border-light;
+  }
+
+  &__publisher {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+  }
+
+  &__verified {
+    padding: 4rpx 10rpx;
+    border-radius: 6rpx;
+    background: $success-light;
+    color: $success;
+    font-size: 19rpx;
+    font-weight: 600;
+
+    &.is-basic {
+      background: #f2f1f3;
+      color: $text-tertiary;
+    }
+  }
+
+  &__meta {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 12rpx;
+    margin-left: $space-sm;
+  }
+
+  &__location {
+    color: $text-tertiary;
+    font-size: 21rpx;
+    white-space: nowrap;
+  }
+
+  &__arrow {
+    color: $primary;
+    font-size: 34rpx;
+    line-height: 1;
+  }
+}

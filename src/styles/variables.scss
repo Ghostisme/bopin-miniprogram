@@ -1,0 +1,98 @@
+/** 播聘视觉令牌：以参考图中的玫瑰粉为品牌主色，搭配冷灰背景与深墨色正文。 */
+
+// ========== 品牌色系 ==========
+// 主色：参考截图中的玫瑰粉，所有核心行动和激活态只使用这一组色阶
+$primary: #e799b0;
+$primary-light: #f4c6d4;
+$primary-pale: #fff1f5;
+
+// 辅助色：用于次要强调和状态标签
+$secondary: #c35c80;
+$secondary-light: #e9a2b8;
+$secondary-pale: #fbe1e9;
+
+// ========== 中性色系 ==========
+// 文本色阶:从深到浅,避免纯黑(#000)
+$text-primary: #24242a;
+$text-secondary: #62636d;
+$text-tertiary: #92939d;
+$text-disabled: #c8c8c8; // 禁用态
+
+// 背景色阶
+$bg-page: #f5f6f8;
+$bg-card: #ffffff; // 卡片/弹窗背景
+$bg-hover: #f5f5f5; // hover 态背景
+$bg-disabled: #f0f0f0; // 禁用态背景
+
+// 边框/分割线
+$border-light: #ececf0;
+$border-base: #d9d9d9; // 卡片边框
+$border-dark: #b3b3b3; // 强调边框
+
+// ========== 语义色系 ==========
+// 成功:柔和的薄荷绿(避免过于鲜艳的纯绿)
+$success: #3f9a70;
+$success-light: #e5f5ed;
+
+// 警告:温柔的杏橙色
+$warning: #e59b52;
+$warning-light: #fff1df;
+
+// 错误:柔化的珊瑚红
+$error: #d95d6d;
+$error-light: #fde8eb;
+
+// 信息:淡蓝灰(克制使用,避免冷色调过重)
+$info: #6687a9;
+$info-light: #e8f0f8;
+
+// ========== 字号系统 ==========
+// 基准字号 14px,按 2px 阶梯递增/递减
+$font-xs: 24rpx; // 12px 辅助说明
+$font-sm: 26rpx; // 13px 次要信息
+$font-base: 28rpx; // 14px 正文
+$font-md: 30rpx; // 15px 小标题
+$font-lg: 32rpx; // 16px 卡片标题
+$font-xl: 36rpx; // 18px 页面标题
+$font-xxl: 40rpx; // 20px 大标题
+$font-2xl: 44rpx; // 22px 超大标题
+
+// ========== 圆角系统 ==========
+// 统一 8px 基准,营造柔和视觉
+$radius-sm: 8rpx; // 4px 小元素(tag/chip)
+$radius-base: 16rpx; // 8px 按钮/输入框
+$radius-md: 20rpx;
+$radius-lg: 32rpx; // 16px 弹窗/大卡片
+$radius-pill: 999rpx; // 胶囊形状(全圆角)
+$radius-circle: 50%; // 圆形头像/图标
+
+// ========== 间距系统 ==========
+// 4px 基准网格,保持视觉韵律
+$space-xs: 8rpx; // 4px
+$space-sm: 16rpx; // 8px
+$space-base: 24rpx; // 12px
+$space-md: 32rpx; // 16px
+$space-lg: 48rpx; // 24px
+$space-xl: 64rpx; // 32px
+
+// ========== 阴影系统 ==========
+// 柔和阴影,避免生硬边界
+$shadow-sm: 0 6rpx 20rpx rgba(39, 34, 45, 0.05);
+$shadow-base: 0 10rpx 28rpx rgba(39, 34, 45, 0.09);
+$shadow-lg: 0 16rpx 42rpx rgba(39, 34, 45, 0.16);
+
+// ========== 过渡动效 ==========
+// 统一缓动曲线,营造流畅体验
+$transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1); // 快速反馈(按钮 hover)
+$transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1); // 常规动画(展开/收起)
+$transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1); // 慢速过渡(页面切换)
+
+// ========== z-index 层级 ==========
+// 统一管理层级,避免冲突
+$z-normal: 1;
+$z-dropdown: 10;
+$z-sticky: 100;
+$z-fixed: 500;
+$z-modal-backdrop: 900;
+$z-modal: 1000;
+$z-toast: 2000;

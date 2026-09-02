@@ -1,0 +1,98 @@
+@import '@/styles/variables.scss';
+
+/**
+ * 搜索栏样式 - 温柔女性风格
+ *
+ * 设计要点:
+ * - 输入框用淡粉底色,替代冷灰色
+ * - 搜索按钮使用品牌玫瑰粉
+ * - 输入区保持轻量，方便吸顶后快速重复筛选
+ */
+.search-bar {
+  display: flex;
+  align-items: center;
+  padding: 18rpx $space-md 10rpx;
+  background: transparent;
+
+  &__box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    height: 70rpx;
+    padding: 0 $space-md;
+    background: #f5f5f7;
+    border-radius: $radius-base;
+    border: 1rpx solid transparent;
+    transition: all $transition-fast;
+
+    // 聚焦态:边框加深
+    &--focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 4rpx rgba(231, 153, 176, 0.1);
+    }
+  }
+
+  // 放大镜图标
+  &__icon {
+    position: relative;
+    width: 28rpx;
+    height: 28rpx;
+    margin-right: $space-sm;
+    flex-shrink: 0;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 2rpx;
+      left: 2rpx;
+      width: 18rpx;
+      height: 18rpx;
+      border: 3rpx solid $text-secondary;
+      border-radius: 50%;
+      box-sizing: border-box;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      right: 1rpx;
+      bottom: 1rpx;
+      width: 10rpx;
+      height: 3rpx;
+      background: $text-secondary;
+      border-radius: 2rpx;
+      transform: rotate(45deg);
+    }
+  }
+
+  &__input {
+    flex: 1;
+    height: 100%;
+    font-size: $font-base;
+    color: $text-primary;
+  }
+
+  &__placeholder {
+    color: $text-tertiary;
+    font-size: $font-sm;
+  }
+
+  // 搜索按钮
+  &__btn {
+    flex-shrink: 0;
+    margin-left: $space-sm;
+    padding: 0 $space-lg;
+    height: 70rpx;
+    line-height: 70rpx;
+    font-size: $font-base;
+    color: #fff;
+    font-weight: 600;
+    background: $primary;
+    border-radius: $radius-base;
+    box-shadow: none;
+    transition: all $transition-fast;
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}

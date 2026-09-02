@@ -1,0 +1,387 @@
+@import '../../styles/variables.scss';
+
+.mine-page {
+  min-height: 100vh;
+  background: $bg-page;
+
+  // 顶部用户卡片:白底
+  &__header {
+    background: #ffffff;
+    padding: $space-xl $space-lg;
+    display: flex;
+    align-items: center;
+    margin-bottom: $space-md;
+    box-shadow: $shadow-sm;
+  }
+
+  // 头像:粉色圆形
+  &__avatar {
+    width: 120rpx;
+    height: 120rpx;
+    border-radius: 50%;
+    background: $primary-pale;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: $space-lg;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 3rpx solid rgba(231, 153, 176, 0.35);
+  }
+
+  &__avatar-img {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__avatar-text {
+    font-size: $font-xxl;
+    color: $primary;
+    font-weight: 600;
+  }
+
+  &__info {
+    flex: 1;
+  }
+
+  &__nickname {
+    display: block;
+    font-size: $font-xl;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: 8rpx;
+  }
+
+  &__phone {
+    display: block;
+    font-size: $font-sm;
+    color: $text-secondary;
+    margin-bottom: $space-sm;
+  }
+
+  // 认证徽章:紫色胶囊
+  &__verified-badge {
+    display: inline-block;
+    padding: 6rpx 16rpx;
+    background: $primary-pale;
+    color: $primary;
+    font-size: $font-xs;
+    border-radius: 999rpx;
+    font-weight: 500;
+  }
+
+  &__card-state {
+    display: block;
+    margin-top: 12rpx;
+    color: $primary;
+    font-size: $font-xs;
+
+    &.is-complete {
+      color: #4f9b78;
+    }
+  }
+
+  &__card-section {
+    background: $bg-card;
+    padding: $space-lg;
+    margin: 0 $space-md $space-md;
+    border-radius: $radius-md;
+    box-shadow: $shadow-sm;
+    border: 1rpx solid rgba(231, 153, 176, 0.24);
+  }
+
+  &__card-heading {
+    display: flex;
+    align-items: center;
+    gap: 12rpx;
+  }
+
+  &__required-badge {
+    padding: 4rpx 12rpx;
+    border-radius: 999rpx;
+    background: rgba(231, 153, 176, 0.14);
+    color: $primary;
+    font-size: $font-xs;
+
+    &.is-complete {
+      background: rgba(79, 155, 120, 0.12);
+      color: #4f9b78;
+    }
+  }
+
+  &__card-empty {
+    padding: 22rpx 8rpx 10rpx;
+  }
+
+  &__card-empty-title {
+    display: block;
+    color: $text-primary;
+    font-size: $font-base;
+    font-weight: 600;
+    margin-bottom: 10rpx;
+  }
+
+  &__card-empty-text {
+    display: block;
+    color: $text-secondary;
+    font-size: $font-sm;
+    line-height: 1.55;
+    margin-bottom: 20rpx;
+  }
+
+  &__card-preview {
+    padding: 20rpx;
+    border-radius: $radius-md;
+    background: linear-gradient(135deg, #fff8fa 0%, #fff 72%);
+    border: 1rpx solid rgba(231, 153, 176, 0.2);
+  }
+
+  &__card-preview-top {
+    display: flex;
+    align-items: center;
+  }
+
+  &__card-avatar {
+    width: 76rpx;
+    height: 76rpx;
+    border-radius: 50%;
+    background: $primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: $font-lg;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  &__card-main {
+    flex: 1;
+    margin-left: 18rpx;
+  }
+
+  &__card-name {
+    display: block;
+    color: $text-primary;
+    font-size: $font-lg;
+    font-weight: 600;
+    margin-bottom: 6rpx;
+  }
+
+  &__card-meta {
+    display: block;
+    color: $text-secondary;
+    font-size: $font-sm;
+  }
+
+  &__card-check {
+    width: 36rpx;
+    height: 36rpx;
+    line-height: 36rpx;
+    text-align: center;
+    border-radius: 50%;
+    background: #4f9b78;
+    color: #fff;
+    font-size: $font-sm;
+  }
+
+  &__card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10rpx;
+    margin: 18rpx 0 12rpx;
+  }
+
+  &__card-tag {
+    padding: 6rpx 14rpx;
+    background: rgba(231, 153, 176, 0.14);
+    border-radius: 999rpx;
+    color: $secondary;
+    font-size: $font-xs;
+  }
+
+  &__card-intro {
+    display: block;
+    color: $text-secondary;
+    font-size: $font-sm;
+    line-height: 1.6;
+    margin-bottom: 16rpx;
+  }
+
+  &__card-detail-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    row-gap: 10rpx;
+    column-gap: 16rpx;
+    font-size: $font-xs;
+
+    Text:nth-child(odd) { color: $text-tertiary; }
+    Text:nth-child(even) { color: $text-primary; text-align: right; }
+  }
+
+  &__card-editor {
+    padding-top: 8rpx;
+  }
+
+  &__field {
+    margin-bottom: 18rpx;
+  }
+
+  &__field-label {
+    display: block;
+    color: $text-primary;
+    font-size: $font-sm;
+    font-weight: 500;
+    margin-bottom: 8rpx;
+  }
+
+  &__field-required {
+    color: $primary;
+    margin-left: 4rpx;
+  }
+
+  &__input,
+  &__textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 18rpx;
+    border: 1rpx solid $border-light;
+    border-radius: $radius-sm;
+    background: #fff;
+    color: $text-primary;
+    font-size: $font-sm;
+  }
+
+  &__textarea {
+    min-height: 150rpx;
+    line-height: 1.55;
+  }
+
+  &__card-editor-actions {
+    display: flex;
+    gap: 16rpx;
+    margin-top: 4rpx;
+
+    .mine-page__btn {
+      flex: 1;
+      text-align: center;
+    }
+  }
+
+  &__section {
+    background: $bg-card;
+    padding: $space-lg;
+    margin-bottom: $space-md;
+    border-radius: $radius-md;
+    margin-left: $space-md;
+    margin-right: $space-md;
+    box-shadow: $shadow-sm;
+  }
+
+  &__section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $space-md;
+  }
+
+  &__section-title {
+    font-size: $font-lg;
+    font-weight: 600;
+    color: $text-primary;
+  }
+
+  &__link {
+    font-size: $font-sm;
+    color: $primary;
+    font-weight: 500;
+  }
+
+  // 简历内容区:浅粉底
+  &__resume {
+    padding: $space-md;
+    background: $primary-pale;
+    border-radius: $radius-md;
+    border: 1rpx solid rgba(231, 153, 176, 0.2);
+  }
+
+  &__resume-text {
+    font-size: $font-base;
+    color: $text-secondary;
+    line-height: 1.6;
+  }
+
+  &__empty-resume {
+    padding: $space-xl $space-lg;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__empty-text {
+    font-size: $font-base;
+    color: $text-secondary;
+    margin-bottom: $space-lg;
+  }
+
+  // 按钮:主题粉色
+  &__btn {
+    padding: 12rpx 48rpx;
+    background: $primary;
+    color: #fff;
+    font-size: $font-base;
+    font-weight: 600;
+    border-radius: 999rpx;
+    box-shadow: 0 4rpx 16rpx rgba(231, 153, 176, 0.28);
+    transition: all $transition-fast;
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &--secondary {
+      background: #fff;
+      color: $primary;
+      border: 1rpx solid rgba(231, 153, 176, 0.5);
+      box-shadow: none;
+    }
+
+    &.is-disabled {
+      opacity: 0.55;
+    }
+  }
+
+  &__menu {
+    background: $bg-card;
+    border-radius: $radius-md;
+    margin: 0 $space-md;
+    overflow: hidden;
+    box-shadow: $shadow-sm;
+  }
+
+  &__menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $space-md $space-lg;
+    border-bottom: 1rpx solid $border-light;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:active {
+      background: $primary-pale;
+    }
+  }
+
+  &__menu-text {
+    font-size: $font-base;
+    color: $text-secondary;
+  }
+
+  &__menu-arrow {
+    font-size: $font-lg;
+    color: $text-tertiary;
+  }
+}

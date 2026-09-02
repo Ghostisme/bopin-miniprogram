@@ -1,0 +1,137 @@
+@import '@/styles/variables.scss';
+
+/**
+ * 筛选栏样式 - 温柔女性风格
+ *
+ * 设计要点:
+ * - 选中态用玫瑰粉,替代生硬的绿色
+ * - 下划线用短圆角强调线
+ * - 下拉面板用白底和柔和阴影
+ * - 遮罩颜色更柔和
+ */
+
+.filter-bar {
+  position: relative;
+  background: transparent; // 透明,继承父级渐变
+  z-index: $z-dropdown;
+
+  // —— 下拉筛选行 —— //
+  &__dropdowns {
+    display: flex;
+    align-items: center;
+    padding: 0 $space-md;
+    height: 70rpx;
+    border-bottom: 1rpx solid $border-light;
+  }
+
+  &__dditem {
+    display: flex;
+    align-items: center;
+    margin-right: 38rpx;
+    font-size: $font-sm;
+    color: $text-secondary;
+    transition: color $transition-fast;
+
+    // 选中态:玫瑰粉
+    &.is-active {
+      color: $primary;
+      font-weight: 500;
+    }
+
+    // 展开态:箭头翻转
+    &.is-open .filter-bar__arrow {
+      transform: rotate(180deg);
+      color: $primary;
+    }
+  }
+
+  &__ddlabel {
+    margin-right: 8rpx;
+  }
+
+  &__arrow {
+    font-size: $font-xs;
+    color: $text-tertiary;
+    transition: all $transition-fast;
+  }
+
+  // —— 排序 tab 行 —— //
+  &__sorts {
+    display: flex;
+    align-items: center;
+    padding: 0 $space-md;
+    height: 68rpx;
+  }
+
+  &__sort {
+    margin-right: 44rpx;
+    font-size: $font-sm;
+    color: $text-secondary;
+    position: relative;
+    transition: all $transition-fast;
+
+    // 选中态:玫瑰粉+胶囊下划线
+    &.is-active {
+      color: $primary;
+      font-weight: 600;
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: -10rpx;
+        transform: translateX(-50%);
+        width: 34rpx;
+        height: 5rpx;
+        border-radius: 999rpx; // 全圆角胶囊
+        background: $primary;
+      }
+    }
+  }
+
+  // —— 下拉面板 —— //
+  &__panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: $bg-card;
+    box-shadow: $shadow-base;
+    border-radius: 0 0 $radius-md $radius-md;
+    padding: $space-sm 0;
+    z-index: $z-dropdown + 5;
+    max-height: 520rpx;
+    overflow-y: auto;
+  }
+
+  &__option {
+    padding: $space-md $space-lg;
+    font-size: $font-base;
+    color: $text-secondary;
+    transition: all $transition-fast;
+
+    // 选中项:淡粉底+玫瑰粉文字
+    &.is-selected {
+      color: $primary;
+      background: $primary-pale;
+      font-weight: 600;
+      border-left: 4rpx solid $primary; // 左侧强调条
+    }
+
+    // hover 态(H5)
+    &:hover {
+      background: $primary-pale;
+    }
+  }
+
+  // —— 遮罩 —— //
+  &__mask {
+    position: fixed;
+    top: 138rpx;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2); // 更柔和的遮罩
+    z-index: $z-dropdown;
+  }
+}

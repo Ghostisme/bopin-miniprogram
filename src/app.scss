@@ -1,0 +1,68 @@
+/**
+ * 全局样式入口 - 温柔女性风格
+ *
+ * 说明:此处只放真正全局生效的重置与基础排版。
+ * 设计变量(颜色/间距/字号)统一沉淀在 styles/variables.scss,
+ * 页面/组件通过 @import 引用,避免魔法值散落各处。
+ */
+@import './styles/variables.scss';
+
+page {
+  // 温暖浅灰底色,营造柔和氛围
+  background-color: $bg-page;
+  color: $text-primary;
+  font-size: $font-base;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica,
+    'PingFang SC', 'Microsoft YaHei', sans-serif;
+  line-height: 1.5; // 行高增加可读性
+  // 微信小程序 iOS 端滚动惯性,提升列表滑动手感
+  -webkit-overflow-scrolling: touch;
+}
+
+page::before {
+  content: '';
+  display: block;
+  height: env(safe-area-inset-top);
+  background: $bg-page;
+}
+
+view,
+text,
+image,
+button,
+input,
+scroll-view {
+  box-sizing: border-box;
+}
+
+// 清除小程序 button 默认的边框与背景,统一由业务样式接管
+button {
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  font-size: inherit;
+  line-height: normal;
+
+  &::after {
+    border: none;
+  }
+}
+
+image {
+  display: block;
+}
+
+// 通用单行/多行省略,列表卡片高频使用,沉淀为工具类避免重复
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ellipsis-2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}

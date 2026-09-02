@@ -1,0 +1,164 @@
+@import '../../styles/variables.scss';
+
+/**
+ * 通告详情页样式 - 现代紫色系
+ *
+ * 卡片式布局,白底圆角卡片 + 间距留白,避免信息拥挤。
+ */
+.detail-page {
+  min-height: 100vh;
+  background: $bg-page;
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+
+  // 卡片区:白底圆角
+  &__card {
+    background: $bg-card;
+    margin: $space-md;
+    padding: $space-lg;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-sm;
+    margin-bottom: $space-md;
+  }
+
+  &__title {
+    font-size: $font-xl;
+    font-weight: 700;
+    color: $text-primary;
+    line-height: 1.4;
+    margin-bottom: $space-md;
+  }
+
+  // 标签组
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-xs;
+    margin-bottom: $space-lg;
+  }
+
+  &__tag {
+    padding: 6rpx 16rpx;
+    background: $primary-pale;
+    color: $primary;
+    font-size: $font-sm;
+    border-radius: 999rpx;
+    font-weight: 500;
+  }
+
+  // 信息行
+  &__row {
+    display: flex;
+    align-items: center;
+    padding: $space-sm 0;
+    border-bottom: 1rpx solid $border-light;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__label {
+    width: 140rpx;
+    font-size: $font-base;
+    color: $text-secondary;
+    flex-shrink: 0;
+  }
+
+  &__value {
+    flex: 1;
+    font-size: $font-base;
+    color: $text-primary;
+    font-weight: 500;
+  }
+
+  // 薪资高亮
+  &__salary {
+    color: $primary;
+    font-weight: 600;
+    font-size: $font-lg;
+  }
+
+  // 描述文本块
+  &__desc {
+    font-size: $font-base;
+    color: $text-secondary;
+    line-height: 1.8;
+    white-space: pre-wrap;
+  }
+
+  // 地图容器
+  &__map-wrapper {
+    background: $bg-card;
+    margin: 0 $space-md $space-md;
+    border-radius: $radius-lg;
+    overflow: hidden;
+    box-shadow: $shadow-sm;
+  }
+
+  &__map {
+    width: 100%;
+    height: 400rpx;
+  }
+
+  // 推荐区标题
+  &__recommend-title {
+    font-size: $font-lg;
+    font-weight: 600;
+    color: $text-primary;
+    padding: $space-lg $space-md $space-sm;
+  }
+
+  // 底部操作栏
+  &__footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: $bg-card;
+    padding: $space-md $space-lg calc(#{$space-md} + env(safe-area-inset-bottom));
+    box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
+    display: flex;
+    gap: $space-md;
+    z-index: $z-fixed;
+  }
+
+  // 次要按钮:白底紫边框
+  &__btn-secondary {
+    flex: 1;
+    height: 88rpx;
+    border-radius: 999rpx;
+    background: #fff;
+    border: 2rpx solid $primary;
+    color: $primary;
+    font-size: $font-md;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all $transition-fast;
+
+    &:active {
+      background: $primary-pale;
+    }
+  }
+
+  // 主按钮:紫色渐变
+  &__btn-primary {
+    flex: 2;
+    height: 88rpx;
+    border-radius: 999rpx;
+    background: $primary;
+    color: #fff;
+    font-size: $font-md;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8rpx 24rpx rgba(231, 153, 176, 0.32);
+    transition: all $transition-fast;
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
