@@ -1,0 +1,14 @@
+dist/
+node_modules/
+.temp/
+.rn_temp/
+.DS_Store
+*.log
+.h5-build.log
+.weapp-build.log
+.swc/
+lib/
+target/
+admin-server/data/
+admin/
+admin-server/
