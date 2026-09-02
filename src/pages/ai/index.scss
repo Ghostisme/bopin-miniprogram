@@ -1,0 +1,182 @@
+@import '../../styles/variables.scss';
+
+.ai-page {
+  min-height: 100vh;
+  padding-bottom: 48rpx;
+  background: $bg-page;
+
+  &__hero {
+    padding: 42rpx $space-lg 36rpx;
+    background: $primary;
+    color: #fff;
+  }
+
+  &__eyebrow,
+  &__title,
+  &__desc {
+    display: block;
+  }
+
+  &__eyebrow {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: $font-xs;
+    font-weight: 600;
+  }
+
+  &__title {
+    margin-top: 12rpx;
+    font-size: 42rpx;
+    font-weight: 800;
+    line-height: 1.25;
+  }
+
+  &__desc {
+    margin-top: 12rpx;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: $font-sm;
+    line-height: 1.55;
+  }
+
+  &__quota {
+    display: flex;
+    align-items: center;
+    gap: 28rpx;
+    margin-top: 30rpx;
+  }
+
+  &__quota > view:not(.ai-page__upgrade) {
+    display: flex;
+    flex-direction: column;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 20rpx;
+  }
+
+  &__quota-value {
+    margin-bottom: 5rpx;
+    color: #fff;
+    font-size: 29rpx;
+    font-weight: 800;
+  }
+
+  &__upgrade {
+    margin-left: auto;
+    padding: 12rpx 18rpx;
+    border-radius: $radius-base;
+    background: #fff;
+    color: $secondary;
+    font-size: $font-xs;
+    font-weight: 700;
+  }
+
+  &__panel,
+  &__result,
+  &__history {
+    margin: $space-md;
+    padding: $space-lg;
+    border: 1rpx solid $border-light;
+    border-radius: $radius-md;
+    background: #fff;
+  }
+
+  &__panel-title,
+  &__history-title {
+    display: block;
+    color: $text-primary;
+    font-size: $font-lg;
+    font-weight: 800;
+  }
+
+  &__label {
+    display: block;
+    margin: 24rpx 0 12rpx;
+    color: $text-secondary;
+    font-size: $font-sm;
+  }
+
+  &__chips {
+    display: flex;
+    gap: 12rpx;
+  }
+
+  &__chip {
+    padding: 10rpx 16rpx;
+    border-radius: $radius-base;
+    background: #f5f5f7;
+    color: $text-secondary;
+    font-size: $font-xs;
+
+    &.is-active {
+      background: $primary-pale;
+      color: $secondary;
+      font-weight: 700;
+    }
+  }
+
+  &__input {
+    height: 76rpx;
+    padding: 0 20rpx;
+    border: 1rpx solid $border-light;
+    border-radius: $radius-base;
+    color: $text-primary;
+    font-size: $font-base;
+  }
+
+  &__generate {
+    margin-top: 30rpx;
+    padding: 20rpx;
+    border-radius: $radius-base;
+    background: $primary;
+    color: #fff;
+    font-size: $font-base;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  &__result-head,
+  &__history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__result-head {
+    margin-bottom: 16rpx;
+    color: $secondary;
+    font-size: $font-sm;
+    font-weight: 700;
+  }
+
+  &__result-content {
+    width: 100%;
+    min-height: 180rpx;
+    padding: 18rpx;
+    border-radius: $radius-base;
+    background: #f8f7f8;
+    color: $text-secondary;
+    font-size: $font-sm;
+    line-height: 1.7;
+  }
+
+  &__history {
+    margin-top: 0;
+  }
+
+  &__history-item {
+    padding: 22rpx 0;
+    border-bottom: 1rpx solid $border-light;
+    color: $text-tertiary;
+
+    &:last-child { border-bottom: 0; }
+
+    view { display: flex; flex-direction: column; gap: 6rpx; }
+    view text:first-child { color: $text-primary; font-size: $font-sm; font-weight: 600; }
+    view text:last-child { font-size: $font-xs; }
+  }
+
+  &__empty {
+    display: block;
+    margin-top: 22rpx;
+    color: $text-tertiary;
+    font-size: $font-sm;
+  }
+}

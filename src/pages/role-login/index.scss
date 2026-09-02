@@ -1,0 +1,125 @@
+@import '../../styles/variables.scss';
+
+.role-login-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 72rpx 44rpx calc(48rpx + env(safe-area-inset-bottom));
+  background: linear-gradient(160deg, #fff7fa 0%, $bg-page 46%, #fff 100%);
+
+  &__brand {
+    color: $primary;
+    font-size: 42rpx;
+    font-weight: 800;
+    letter-spacing: 2rpx;
+  }
+
+  &__eyebrow {
+    display: block;
+    margin-top: 88rpx;
+    color: $secondary;
+    font-size: $font-sm;
+    font-weight: 600;
+  }
+
+  &__title {
+    display: block;
+    margin-top: 16rpx;
+    color: $text-primary;
+    font-size: 48rpx;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  &__description {
+    display: block;
+    margin-top: 16rpx;
+    color: $text-secondary;
+    font-size: $font-base;
+    line-height: 1.6;
+  }
+
+  &__role-tabs {
+    display: flex;
+    gap: 16rpx;
+    margin-top: 54rpx;
+  }
+
+  &__role-tab {
+    flex: 1;
+    padding: 22rpx 18rpx;
+    border: 1rpx solid $border-light;
+    border-radius: $radius-md;
+    background: rgba(255, 255, 255, 0.78);
+    color: $text-secondary;
+
+    Text:first-child,
+    Text:last-child { display: block; }
+    Text:first-child { color: $text-primary; font-size: $font-md; font-weight: 600; margin-bottom: 6rpx; }
+    Text:last-child { font-size: $font-xs; }
+
+    &.is-active {
+      border-color: rgba(231, 153, 176, 0.7);
+      background: #fff;
+      box-shadow: 0 8rpx 24rpx rgba(231, 153, 176, 0.15);
+      Text:first-child { color: $primary; }
+    }
+  }
+
+  &__form {
+    margin-top: 44rpx;
+    padding: 28rpx;
+    border-radius: $radius-md;
+    background: #fff;
+    box-shadow: $shadow-sm;
+  }
+
+  &__label {
+    display: block;
+    color: $text-primary;
+    font-size: $font-sm;
+    font-weight: 600;
+    margin-bottom: 12rpx;
+  }
+
+  &__input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20rpx;
+    border: 1rpx solid $border-light;
+    border-radius: $radius-sm;
+    color: $text-primary;
+    font-size: $font-base;
+  }
+
+  &__submit {
+    display: flex;
+    height: 82rpx;
+    align-items: center;
+    justify-content: center;
+    margin-top: 24rpx;
+    border-radius: $radius-pill;
+    background: $primary;
+    color: #fff;
+    font-size: $font-md;
+    font-weight: 600;
+    box-shadow: 0 8rpx 20rpx rgba(231, 153, 176, 0.24);
+
+    &.is-disabled { opacity: 0.55; }
+  }
+
+  &__demo {
+    padding: 24rpx 0 4rpx;
+    color: $secondary;
+    text-align: center;
+    font-size: $font-sm;
+  }
+
+  &__footnote {
+    display: block;
+    margin-top: 38rpx;
+    color: $text-tertiary;
+    font-size: $font-xs;
+    line-height: 1.6;
+    text-align: center;
+  }
+}

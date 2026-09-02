@@ -1,0 +1,121 @@
+@import '../../styles/variables.scss';
+
+.message-page {
+  min-height: 100vh;
+  background: $bg-page;
+
+  // 顶部额度提示:浅紫色
+  &__quota {
+    background: $primary-pale;
+    padding: $space-md $space-lg;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1rpx solid rgba(231, 153, 176, 0.2);
+  }
+
+  &__quota-text {
+    font-size: $font-base;
+    color: $text-secondary;
+  }
+
+  &__quota-link {
+    font-size: $font-sm;
+    color: $primary;
+    font-weight: 600;
+  }
+
+  &__list {
+    background: $bg-card;
+  }
+
+  &__item {
+    display: flex;
+    padding: $space-md $space-lg;
+    border-bottom: 1rpx solid $border-light;
+    transition: background $transition-fast;
+
+    &:active {
+      background: $primary-pale;
+    }
+  }
+
+  // 头像:圆形,浅紫底色
+  &__avatar {
+    position: relative;
+    width: 96rpx;
+    height: 96rpx;
+    flex-shrink: 0;
+    margin-right: $space-md;
+    border-radius: 50%;
+    background: $primary-pale;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  &__avatar-img {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__avatar-text {
+    font-size: $font-xl;
+    color: $primary;
+    font-weight: 600;
+  }
+
+  // 未读角标:紫色渐变
+  &__badge {
+    position: absolute;
+    top: -4rpx;
+    right: -4rpx;
+    min-width: 32rpx;
+    height: 32rpx;
+    padding: 0 8rpx;
+    background: $error;
+    color: #fff;
+    font-size: $font-xs;
+    border-radius: 999rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2rpx solid #ffffff;
+    box-shadow: 0 2rpx 8rpx rgba(217, 93, 109, 0.3);
+  }
+
+  &__content {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8rpx;
+  }
+
+  &__name {
+    font-size: $font-md;
+    font-weight: 600;
+    color: $text-primary;
+  }
+
+  &__time {
+    font-size: $font-xs;
+    color: $text-tertiary;
+    flex-shrink: 0;
+    margin-left: $space-sm;
+  }
+
+  &__last-msg {
+    display: block;
+    font-size: $font-sm;
+    color: $text-secondary;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}

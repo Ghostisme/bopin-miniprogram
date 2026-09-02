@@ -1,0 +1,161 @@
+@import '../../styles/variables.scss';
+
+/**
+ * 聊天对话页面样式
+ */
+.chat-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: $bg-page;
+
+  // 消息列表区域
+  &__messages {
+    flex: 1;
+    padding: $space-md;
+    overflow-y: auto;
+  }
+
+  // 消息项
+  &__msg-item {
+    margin-bottom: $space-lg;
+
+    &.is-mine {
+      .chat-page__msg-content {
+        justify-content: flex-end;
+      }
+
+      .chat-page__bubble {
+        background: $primary;
+        color: #fff;
+      }
+    }
+
+    &.is-other {
+      .chat-page__msg-content {
+        justify-content: flex-start;
+      }
+
+      .chat-page__bubble {
+        background: $bg-card;
+        color: $text-primary;
+      }
+    }
+  }
+
+  // 消息时间
+  &__msg-time {
+    text-align: center;
+    margin-bottom: $space-sm;
+
+    text {
+      font-size: $font-xs;
+      color: $text-tertiary;
+      padding: 4rpx 16rpx;
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: $radius-sm;
+    }
+  }
+
+  // 消息内容行
+  &__msg-content {
+    display: flex;
+    align-items: flex-end;
+    gap: $space-sm;
+  }
+
+  // 头像
+  &__avatar {
+    width: 72rpx;
+    height: 72rpx;
+    border-radius: 50%;
+    background: $primary-pale;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    &.is-mine {
+      background: $primary-light;
+    }
+  }
+
+  &__avatar-text {
+    font-size: $font-base;
+    color: $primary;
+    font-weight: 600;
+  }
+
+  // 消息气泡
+  &__bubble {
+    max-width: 480rpx;
+    padding: $space-md $space-lg;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-sm;
+  }
+
+  &__bubble-text {
+    font-size: $font-base;
+    line-height: 1.6;
+    word-break: break-word;
+  }
+
+  // 加载提示
+  &__loading {
+    text-align: center;
+    padding: $space-lg;
+    font-size: $font-sm;
+    color: $text-tertiary;
+  }
+
+  // 底部输入栏
+  &__input-bar {
+    display: flex;
+    align-items: center;
+    padding: $space-md;
+    padding-bottom: calc(#{$space-md} + env(safe-area-inset-bottom));
+    background: $bg-card;
+    border-top: 1rpx solid $border-light;
+    gap: $space-md;
+  }
+
+  &__input {
+    flex: 1;
+    height: 72rpx;
+    padding: 0 $space-md;
+    background: $bg-page;
+    border-radius: 999rpx;
+    border: 1rpx solid $border-light;
+    font-size: $font-base;
+    color: $text-primary;
+
+    &:focus {
+      border-color: $primary;
+    }
+  }
+
+  &__send-btn {
+    width: 120rpx;
+    height: 72rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $text-tertiary;
+    color: #fff;
+    font-size: $font-base;
+    font-weight: 600;
+    border-radius: 999rpx;
+    opacity: 0.5;
+    transition: all $transition-fast;
+
+    &.is-active {
+      background: $primary;
+      opacity: 1;
+      box-shadow: 0 4rpx 16rpx rgba(231, 153, 176, 0.28);
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+  }
+}

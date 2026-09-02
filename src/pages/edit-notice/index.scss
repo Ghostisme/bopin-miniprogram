@@ -1,0 +1,185 @@
+@import '../../styles/variables.scss';
+
+/**
+ * 创建/编辑通告页面样式
+ */
+.edit-notice-page {
+  min-height: 100vh;
+  background: $bg-page;
+  padding-bottom: 160rpx;
+
+  // 表单区域
+  &__form {
+    padding: $space-md;
+  }
+
+  // 表单分区
+  &__section {
+    background: $bg-card;
+    border-radius: $radius-md;
+    padding: $space-lg;
+    margin-bottom: $space-md;
+    box-shadow: $shadow-sm;
+  }
+
+  &__section-title {
+    display: block;
+    font-size: $font-lg;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: $space-lg;
+    padding-bottom: $space-sm;
+    border-bottom: 2rpx solid $border-light;
+  }
+
+  // 表单字段
+  &__field {
+    margin-bottom: $space-lg;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__label {
+    display: block;
+    font-size: $font-base;
+    color: $text-primary;
+    font-weight: 500;
+    margin-bottom: $space-sm;
+
+    &::after {
+      content: ' *';
+      color: $error;
+    }
+  }
+
+  // 输入框
+  &__input {
+    width: 100%;
+    height: 80rpx;
+    padding: 0 $space-md;
+    background: $bg-page;
+    border-radius: $radius-md;
+    border: 2rpx solid $border-light;
+    font-size: $font-base;
+    color: $text-primary;
+    transition: border-color $transition-fast;
+
+    &:focus {
+      border-color: $primary;
+      background: #fff;
+    }
+  }
+
+  // 选择器
+  &__picker {
+    height: 80rpx;
+    padding: 0 $space-md;
+    background: $bg-page;
+    border-radius: $radius-md;
+    border: 2rpx solid $border-light;
+    display: flex;
+    align-items: center;
+    font-size: $font-base;
+    color: $text-primary;
+
+    .placeholder {
+      color: $text-tertiary;
+    }
+  }
+
+  // 文本域
+  &__textarea {
+    width: 100%;
+    min-height: 200rpx;
+    padding: $space-md;
+    background: $bg-page;
+    border-radius: $radius-md;
+    border: 2rpx solid $border-light;
+    font-size: $font-base;
+    color: $text-primary;
+    line-height: 1.6;
+
+    &:focus {
+      border-color: $primary;
+      background: #fff;
+    }
+  }
+
+  // 薪资行
+  &__salary-row {
+    display: flex;
+    align-items: center;
+  }
+
+  &__salary-input {
+    flex: 1;
+    height: 80rpx;
+    padding: 0 $space-md;
+    background: $bg-page;
+    border-radius: $radius-md;
+    border: 2rpx solid $border-light;
+    font-size: $font-base;
+    color: $text-primary;
+    text-align: center;
+  }
+
+  &__salary-sep {
+    margin: 0 $space-sm;
+    font-size: $font-base;
+    color: $text-tertiary;
+  }
+
+  &__salary-unit {
+    margin-left: $space-sm;
+    font-size: $font-base;
+    color: $text-secondary;
+    white-space: nowrap;
+  }
+
+  // 底部按钮区
+  &__footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: $space-md;
+    padding-bottom: calc(#{$space-md} + env(safe-area-inset-bottom));
+    background: $bg-card;
+    box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.08);
+    display: flex;
+    gap: $space-md;
+    z-index: $z-fixed;
+  }
+
+  &__btn {
+    flex: 1;
+    height: 88rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999rpx;
+    font-size: $font-md;
+    font-weight: 600;
+    transition: all $transition-fast;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    // 次要按钮（保存草稿）
+    &--secondary {
+      background: $bg-page;
+      border: 2rpx solid $primary;
+      color: $primary;
+    }
+
+    // 主要按钮（提交审核）
+    &--primary {
+      background: $primary;
+      color: #fff;
+      box-shadow: 0 8rpx 24rpx rgba(231, 153, 176, 0.32);
+    }
+  }
+}
