@@ -312,8 +312,10 @@ function BirthPicker({ value, age, onClose, onConfirm }: { value: string; age: n
   const [month, setMonth] = useState(initialMonth)
   const years = Array.from({ length: 61 }, (_, index) => String(currentYear - 60 + index))
   const months = Array.from({ length: 12 }, (_, index) => String(index + 1).padStart(2, '0'))
-  const yearScrollTop = Math.max(0, (years.indexOf(year) - 2) * 70)
-  const monthScrollTop = Math.max(0, (months.indexOf(month) - 2) * 70)
+  const screenWidth = Taro.getSystemInfoSync().windowWidth || 750
+  const rowHeight = 70 * screenWidth / 750
+  const yearScrollTop = Math.max(0, (years.indexOf(year) - 2) * rowHeight)
+  const monthScrollTop = Math.max(0, (months.indexOf(month) - 2) * rowHeight)
   return <View className="card-builder__birth-picker"><View className="card-builder__birth-picker-mask" onClick={onClose} /><View className="card-builder__birth-picker-panel"><Text className="card-builder__birth-picker-title">选择器</Text><View className="card-builder__birth-picker-columns"><ScrollView className="card-builder__birth-picker-column" scrollY scrollTop={yearScrollTop}>{years.map((item) => <Text key={item} className={item === year ? 'is-selected' : ''} onClick={() => setYear(item)}>{item}年</Text>)}</ScrollView><ScrollView className="card-builder__birth-picker-column" scrollY scrollTop={monthScrollTop}>{months.map((item) => <Text key={item} className={item === month ? 'is-selected' : ''} onClick={() => setMonth(item)}>{item}月</Text>)}</ScrollView></View><View className="card-builder__birth-picker-actions"><Text onClick={onClose}>取消</Text><Text onClick={() => onConfirm(`${year}-${month}`)}>确认</Text></View></View></View>
 }
 
