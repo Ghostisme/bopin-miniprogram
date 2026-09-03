@@ -45,6 +45,8 @@ export interface AnchorCard {
   stageName: string
   /** 擅长的直播品类 */
   categories: string[]
+  /** 出生年月，模卡公开展示前端可选择性显示 */
+  birthMonth?: string
   /** 当前所在城市 */
   city: string
   /** 对外简介 */
@@ -71,6 +73,14 @@ export interface AnchorCard {
   expectedCities?: string[]
   /** 能否接受全班次或排班 */
   acceptShift?: boolean
+  /** 工作类型：全职、兼职或不限 */
+  workType?: string
+  /** 月薪期望 */
+  monthlySalary?: string
+  /** 时薪期望 */
+  hourlySalary?: string
+  /** 是否有自然流量起号经验 */
+  naturalTraffic?: boolean
   /** 代表直播品类 */
   experienceCategory?: string
   /** 直播账号脱敏展示 */
@@ -87,6 +97,8 @@ export interface AnchorCard {
   clips?: string[]
   /** 主播主动上传的直播录屏临时或云端地址 */
   recordingUrl?: string
+  /** 多段直播录屏地址，第一段作为主录屏 */
+  recordingClips?: string[]
   /** 加入的主播群名称 */
   groupName?: string
   /** 主播群副标题 */

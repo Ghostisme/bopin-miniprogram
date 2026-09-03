@@ -118,7 +118,7 @@ export async function uploadCardMedia(filePath: string): Promise<string> {
       header: { Authorization: `Bearer ${token}` },
     })
     const body = typeof response.data === 'string' ? JSON.parse(response.data) : response.data
-    if (body.code !== 0 || !body.data?.path) throw new Error(body.message || '上传失败')
+    if (!body || body.code !== 0 || !body.data?.path) throw new Error(body?.message || `上传失败（${response.statusCode}）`)
     return `${API_BASE_URL.replace(/\/api\/v1\/?$/, '')}${body.data.path}`
   } catch (error) {
     Taro.showToast({ title: error instanceof Error ? error.message : '上传失败，请重试', icon: 'none' })

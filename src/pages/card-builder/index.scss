@@ -1,0 +1,54 @@
+@import '../../styles/variables.scss';
+
+.card-builder { min-height: 100vh; padding-bottom: 150rpx; background: #f5f6fa; color: $text-primary; }
+.card-builder__nav { display: flex; height: 92rpx; align-items: center; justify-content: space-between; padding: 0 28rpx; background: #fff; border-bottom: 1rpx solid $border-light; font-size: 30rpx; }
+.card-builder__nav > text:first-child { width: 80rpx; color: $text-primary; font-size: 54rpx; line-height: 1; }
+.card-builder__nav-count { width: 80rpx; color: $text-tertiary; font-size: 22rpx; text-align: right; }
+.card-builder__progress { display: flex; justify-content: space-between; padding: 24rpx 28rpx 20rpx; background: #fff; }
+.card-builder__progress-item { position: relative; display: flex; width: 20%; flex-direction: column; align-items: center; color: $text-tertiary; font-size: 19rpx; }
+.card-builder__progress-item text:first-child { display: flex; width: 42rpx; height: 42rpx; align-items: center; justify-content: center; margin-bottom: 8rpx; border-radius: 50%; background: #eef0f5; color: $text-tertiary; }
+.card-builder__progress-item.is-active { color: $secondary; }
+.card-builder__progress-item.is-active text:first-child { background: $secondary; color: #fff; }
+.card-builder__content { padding: 28rpx; }
+.card-builder__eyebrow { display: block; color: $secondary; font-size: 22rpx; }
+.card-builder__title { display: block; margin-top: 12rpx; font-size: 38rpx; font-weight: 800; }
+.card-builder__description,.card-builder__hint { display: block; margin-top: 10rpx; color: $text-secondary; font-size: 23rpx; line-height: 1.5; }
+.card-builder__notice { margin: 24rpx 0 12rpx; padding: 18rpx; border-radius: $radius-md; background: #fff1ed; color: #b45c36; font-size: 23rpx; }
+.card-builder__media-list { display: flex; flex-direction: column; gap: 18rpx; }
+.card-builder__media-item { overflow: hidden; border: 1rpx solid $border-light; border-radius: $radius-md; background: #fff; }
+.card-builder__media-item video { display: block; width: 100%; height: 330rpx; background: #111; }
+.card-builder__media-title { display: block; box-sizing: border-box; width: calc(100% - 32rpx); margin: 0 16rpx; padding: 18rpx 0; border-bottom: 1rpx solid $border-light; color: $text-primary; font-size: 25rpx; text-align: center; }
+.card-builder__media-actions { display: flex; flex-direction: row-reverse; justify-content: space-between; padding: 14rpx 18rpx; color: $secondary; font-size: 22rpx; }
+.card-builder__upload { display: flex; min-height: 150rpx; align-items: center; padding: 20rpx; border: 1rpx solid $border-light; border-radius: $radius-md; background: #fff; }
+.card-builder__upload-plus { display: flex; width: 104rpx; height: 112rpx; align-items: center; justify-content: center; margin-right: 20rpx; border-radius: $radius-sm; background: #f0f2f7; color: $secondary; font-size: 50rpx; }
+.card-builder__upload > view text { display: block; margin: 6rpx 0; color: $text-secondary; font-size: 22rpx; line-height: 1.5; }
+.card-builder__upload > view text:first-child { color: $text-primary; font-size: 25rpx; }
+.card-builder__field { margin-top: 24rpx; }
+.card-builder__field-label { display: block; margin-bottom: 12rpx; color: $text-primary; font-size: 24rpx; }
+.card-builder__field-label > text { color: $text-tertiary; font-size: 21rpx; }
+.card-builder__input-wrap,.card-builder__select,.card-builder__city-select,.card-builder__radio-row { display: flex; min-height: 92rpx; box-sizing: border-box; align-items: center; justify-content: space-between; padding: 0 28rpx; border-radius: $radius-md; background: #fff; }
+.card-builder__input-wrap input { flex: 1; color: $text-primary; font-size: 27rpx; }
+.card-builder__input-wrap > text { color: $text-secondary; font-size: 25rpx; }
+.card-builder__select { color: $text-secondary; font-size: 27rpx; }
+.card-builder__select > text:last-child { color: $text-tertiary; font-size: 38rpx; }
+.card-builder__radio-row { margin: 0 0 24rpx; }
+.card-builder__radio-row > text { flex: 1; color: $text-secondary; font-size: 25rpx; text-align: left; }
+.card-builder__radio-row--three > text { text-align: center; }
+.card-builder__radio-row .is-selected { color: $secondary; }
+.card-builder__radio { margin-right: 8rpx; color: $border-dark; font-size: 31rpx; }
+.card-builder__is-selected,.card-builder__radio-row .is-selected .card-builder__radio { color: $secondary; }
+.card-builder__city-select { flex-wrap: wrap; justify-content: flex-start; gap: 12rpx; min-height: 92rpx; }
+.card-builder__tag { padding: 8rpx 18rpx; border-radius: 999rpx; background: $primary-pale; color: $secondary; font-size: 22rpx; }
+.card-builder__add { margin-left: 10rpx; color: $secondary; font-size: 40rpx; }
+.card-builder__city-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12rpx; margin-top: 12rpx; padding: 16rpx; border-radius: $radius-md; background: #fff; }
+.card-builder__city-options text { padding: 14rpx 0; border: 1rpx solid $border-light; border-radius: $radius-sm; color: $text-secondary; font-size: 22rpx; text-align: center; }
+.card-builder__city-options text.is-selected { border-color: $secondary; background: $primary-pale; color: $secondary; }
+.card-builder__category-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14rpx; }
+.card-builder__category-grid text { padding: 20rpx 6rpx; border: 1rpx solid transparent; border-radius: $radius-sm; background: #fff; color: $text-secondary; font-size: 22rpx; text-align: center; }
+.card-builder__category-grid text.is-selected { border-color: $secondary; background: $primary-pale; color: $secondary; }
+.card-builder__textarea { display: block; width: 100%; min-height: 150rpx; box-sizing: border-box; padding: 22rpx; border-radius: $radius-md; background: #fff; color: $text-primary; font-size: 25rpx; }
+.card-builder__footer { position: fixed; right: 0; bottom: 0; left: 0; z-index: 10; padding: 16rpx 28rpx calc(16rpx + env(safe-area-inset-bottom)); background: rgba(245, 246, 250, 0.96); }
+.card-builder__next { display: flex; height: 76rpx; align-items: center; justify-content: center; border-radius: 999rpx; background: $primary; color: #fff; font-size: 29rpx; font-weight: 700; }
+.card-builder__next.is-disabled { opacity: 0.55; }
+.card-builder__skip { display: block; margin-top: 14rpx; color: $secondary; font-size: 22rpx; text-align: center; }
+.card-builder__loading { display: block; padding-top: 40vh; color: $text-tertiary; text-align: center; }

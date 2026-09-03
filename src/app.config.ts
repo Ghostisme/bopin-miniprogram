@@ -9,6 +9,7 @@ export default defineAppConfig({
     'pages/chat/index',
     'pages/services/index',
     'pages/role-login/index',
+    'pages/card-builder/index',
     'pages/talents/index',
     'pages/talent-detail/index',
   ],

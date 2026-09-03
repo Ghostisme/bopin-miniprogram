@@ -131,6 +131,10 @@ export default function MinePage() {
 
   const chooseRecording = async () => {
     setCreateSheetVisible(false)
+    if (!editingCard) {
+      Taro.navigateTo({ url: '/pages/card-builder/index' })
+      return
+    }
     try {
       const result = await Taro.chooseVideo({ sourceType: ['album', 'camera'], maxDuration: 600, compressed: true })
       setUploadingMedia(true)
