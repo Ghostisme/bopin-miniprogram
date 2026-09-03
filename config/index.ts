@@ -4,6 +4,9 @@ import prodConfig from './prod'
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig(async (merge, { command, mode }) => {
+  // Keep the WeChat output stable so H5 builds cannot remove dist/app.json.
+  const outputRoot = process.env.TARO_ENV === 'h5' ? 'dist-h5' : 'dist'
+
   const baseConfig = {
     projectName: 'bopin-miniprogram',
     date: '2026-08-18',
@@ -15,7 +18,7 @@ export default defineConfig(async (merge, { command, mode }) => {
       828: 1.81 / 2
     },
     sourceRoot: 'src',
-    outputRoot: 'dist',
+    outputRoot,
     plugins: [],
     defineConstants: {},
     copy: {
