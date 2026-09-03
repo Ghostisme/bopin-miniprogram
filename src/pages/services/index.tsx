@@ -13,6 +13,7 @@ import {
   fetchEventRegistrations,
   fetchProducts,
   fetchWallet,
+  fetchServiceAccess,
   purchaseProduct,
   settleContract,
   settleCrossBorder,
@@ -28,6 +29,7 @@ import {
   type PlatformProduct,
   type PlatformRecord,
   type Wallet,
+  type ServiceAccess,
 } from '@/services'
 import { getStorage, setActiveRole, tokenKeyForRole } from '@/utils/storage'
 import './index.scss'
@@ -49,6 +51,7 @@ function field(record: PlatformRecord | undefined, name: string): string {
 export default function ServicesPage() {
   const [domain, setDomain] = useState<ServiceDomain>('supply')
   const [wallet, setWallet] = useState<Wallet | null>(null)
+  const [serviceAccess, setServiceAccess] = useState<ServiceAccess[]>([])
   const [notices, setNotices] = useState<Array<{ id: string; title: string }>>([])
   const [courses, setCourses] = useState<PlatformCourse[]>([])
   const [products, setProducts] = useState<PlatformProduct[]>([])
@@ -60,10 +63,11 @@ export default function ServicesPage() {
 
   const load = async () => {
     try {
-      const [walletData, noticeData, courseData, productData, eventData, providerData, enrollmentData] = await Promise.all([
-        fetchWallet(), fetchNotices(), fetchCourses(), fetchProducts(), fetchAnnualEvents(), fetchEorProviders(), fetchEnrollments(),
+      const [walletData, accessData, noticeData, courseData, productData, eventData, providerData, enrollmentData] = await Promise.all([
+        fetchWallet(), fetchServiceAccess(), fetchNotices(), fetchCourses(), fetchProducts(), fetchAnnualEvents(), fetchEorProviders(), fetchEnrollments(),
       ])
       setWallet(walletData)
+      setServiceAccess(accessData)
       setNotices(noticeData.map((item) => ({ id: item.id, title: item.title })))
       setCourses(courseData)
       setProducts(productData)
@@ -104,6 +108,9 @@ export default function ServicesPage() {
   const firstProduct = products[0]
   const firstEvent = events[0]
   const firstProvider = providers[0]
+  const accessFor = (featureKey: string) => serviceAccess.find((item) => item.featureKey === featureKey)
+  const contactAccess = accessFor('CONTACT_UNLOCK')
+  const aiAccess = accessFor('AI_SCRIPT')
 
   const handleTraining = async () => {
     if (!firstOnline) return
@@ -142,8 +149,8 @@ export default function ServicesPage() {
       {domain === 'supply' && <View className="services-page__section">
         <ServiceCard index="01" title="主播注册与模卡" desc="模卡是平台核心服务的必填资料，完善后才能解锁联系、训练和结算服务。" status="模卡必填" action="完善模卡" onClick={() => Taro.switchTab({ url: '/pages/mine/index' })} />
         <ServiceCard index="02" title="岗位发布与搜索" desc="按城市、品类和用工类型筛选真实招聘通告。" status={`${notices.length} 个岗位`} action="浏览通告" onClick={() => Taro.switchTab({ url: '/pages/notice/index' })} />
-        <ServiceCard index="03" title="联系方式解锁 · 道具卡" desc={`使用 1 张道具卡解锁「${notices[0]?.title ?? '精选岗位'}」招聘方。`} status={`${wallet?.cardBalance ?? 0} 张可用`} action="立即解锁" onClick={() => run('联系方式解锁', async () => { if (!notices[0]) return; await unlockContact(notices[0].id) })} />
-        <ServiceCard index="04" title="AI 话术与会员体系" desc="生成直播开场、卖点讲解和催单话术，会员可补充额度。" status={`${wallet?.aiQuota ?? 0} 次可用`} action="打开 AI 工作台" onClick={() => Taro.switchTab({ url: '/pages/ai/index' })} />
+        <ServiceCard index="03" title="联系方式解锁 · 道具卡" desc={`使用 1 张道具卡解锁「${notices[0]?.title ?? '精选岗位'}」招聘方。`} status={contactAccess?.active === false ? '暂未开放' : `${wallet?.cardBalance ?? 0} 张可用`} action={contactAccess?.active === false ? '暂未开放' : '立即解锁'} disabled={contactAccess?.active === false} onClick={() => run('联系方式解锁', async () => { if (!notices[0] || contactAccess?.active === false) return; await unlockContact(notices[0].id) })} />
+        <ServiceCard index="04" title="AI 话术与会员体系" desc="生成直播开场、卖点讲解和催单话术，会员可补充额度。" status={aiAccess?.active === false ? '暂未开放' : `${wallet?.aiQuota ?? 0} 次可用`} action={aiAccess?.active === false ? '暂未开放' : '打开 AI 工作台'} disabled={aiAccess?.active === false} onClick={() => { if (aiAccess?.active !== false) Taro.switchTab({ url: '/pages/ai/index' }) }} />
         <ServiceCard index="05" title="道具卡补充" desc="本地支付沙箱会生成订单并即时补充道具卡余额。" status="支付沙箱已接入" action="购买 3 张" onClick={() => run('道具卡购买', async () => { await topUpCards(3) })} />
       </View>}
 
@@ -167,6 +174,6 @@ export default function ServicesPage() {
   )
 }
 
-function ServiceCard({ index, title, desc, status, action, onClick }: { index: string; title: string; desc: string; status: string; action: string; onClick: () => void }) {
-  return <View className="service-card"><View className="service-card__head"><Text>{index}</Text><Text>{status}</Text></View><Text className="service-card__title">{title}</Text><Text className="service-card__desc">{desc}</Text><View className="service-card__action" onClick={onClick}>{action}<Text>›</Text></View></View>
+function ServiceCard({ index, title, desc, status, action, disabled, onClick }: { index: string; title: string; desc: string; status: string; action: string; disabled?: boolean; onClick: () => void }) {
+  return <View className={`service-card ${disabled ? 'is-disabled' : ''}`}><View className="service-card__head"><Text>{index}</Text><Text>{status}</Text></View><Text className="service-card__title">{title}</Text><Text className="service-card__desc">{desc}</Text><View className="service-card__action" onClick={disabled ? undefined : onClick}>{action}<Text>›</Text></View></View>
 }

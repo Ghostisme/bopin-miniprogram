@@ -7,6 +7,21 @@ export interface Wallet {
   aiQuota: number
 }
 
+export interface ServiceAccess {
+  id: string
+  userId: string
+  featureKey: 'CARD_OPTIMIZE' | 'CARD_EXPOSURE' | 'AI_SCRIPT' | 'ANCHOR_WITHDRAW' | 'CONTACT_UNLOCK' | string
+  label: string
+  enabled: boolean
+  countLimited: boolean
+  remainingCount: number
+  expiryLimited: boolean
+  expiresAt: number | null
+  unitPrice: number
+  feeRate: number
+  active: boolean
+}
+
 export interface AiScript {
   id: string
   scene: string
@@ -63,11 +78,15 @@ export interface PlatformRecord {
 }
 
 export const fetchWallet = () => request<Wallet>({ url: '/wallet' })
+export const fetchServiceAccess = () => request<ServiceAccess[]>({ url: '/users/me/service-access' })
 export const topUpCards = (cards: number) => request<PlatformRecord>({ url: '/wallet/topup', method: 'POST', data: { cards } })
 export const unlockContact = (noticeId: string) => request<PlatformRecord>({ url: `/notices/${noticeId}/unlock`, method: 'POST' })
 export const purchaseMembership = (plan: string) => request<PlatformRecord>({ url: '/membership/orders', method: 'POST', data: { plan, amount: plan === 'PRO' ? 29.9 : 99 } })
 export const generateAiScript = (scene: string, product: string, tone: string) => request<AiScript>({ url: '/ai/scripts', method: 'POST', data: { scene, product, tone } })
 export const fetchAiScripts = () => request<AiScript[]>({ url: '/ai/scripts' })
+export const optimizeAnchorCard = (cardId: string, input: { intro?: string; advantage?: string; stageName?: string; categories?: string[] }) => request<PlatformRecord>({ url: `/users/me/cards/${cardId}/optimize`, method: 'POST', data: input })
+export const purchaseCardExposure = (cardId: string) => request<PlatformRecord>({ url: `/users/me/cards/${cardId}/exposure`, method: 'POST' })
+export const requestAnchorWithdraw = (grossAmount: number) => request<PlatformRecord>({ url: '/users/me/withdraw', method: 'POST', data: { grossAmount } })
 
 export const fetchCourses = (mode?: 'ONLINE' | 'OFFLINE') => request<PlatformCourse[]>({ url: `/courses${mode ? `?mode=${mode}` : ''}`, auth: false })
 export const enrollCourse = (courseId: string) => request<PlatformRecord>({ url: `/courses/${courseId}/enroll`, method: 'POST' })

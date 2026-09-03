@@ -92,4 +92,6 @@
   &__desc { margin-top: 10rpx; color: $text-secondary; font-size: $font-sm; line-height: 1.6; }
   &__action { display: flex; align-items: center; justify-content: space-between; margin-top: 20rpx; padding: 16rpx 18rpx; border-radius: $radius-base; background: $primary; color: #fff; font-size: $font-sm; font-weight: 700; }
   &__action text { font-size: 30rpx; line-height: 1; }
+  &.is-disabled { opacity: .62; }
+  &.is-disabled .service-card__action { background: #b9b3bc; }
 }

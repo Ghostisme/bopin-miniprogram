@@ -130,6 +130,8 @@
     font-size: $font-base;
     font-weight: 700;
     text-align: center;
+
+    &.is-disabled { background: #b9b3bc; }
   }
 
   &__result-head,
