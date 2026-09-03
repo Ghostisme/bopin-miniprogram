@@ -121,6 +121,11 @@ export default function MinePage() {
     setEditingCard(true)
   }
 
+  const openCardDetails = (card: AnchorCard) => {
+    const query = card.id ? `?id=${encodeURIComponent(card.id)}` : ''
+    Taro.navigateTo({ url: `/pages/card-detail/index${query}` })
+  }
+
   const openCreateSheet = () => {
     if (cards.length >= 5) {
       Taro.showToast({ title: '最多可创建 5 张模卡', icon: 'none' })
@@ -289,7 +294,7 @@ export default function MinePage() {
           <View className={`mine-page__showcase ${hasCards ? 'is-complete' : ''}`}>
             {hasCards && previewCard ? (
               <>
-                <View className="mine-page__complete-heading"><Text className="mine-page__section-title">我的模卡</Text><View className="mine-page__complete-heading-actions"><Text className="mine-page__detail-link" onClick={() => openCardEditor(previewCard)}>查看详情›</Text><Text className="mine-page__new-link" onClick={openCreateSheet}>新建</Text></View></View>
+                <View className="mine-page__complete-heading"><Text className="mine-page__section-title">我的模卡</Text><View className="mine-page__complete-heading-actions"><Text className="mine-page__detail-link" onClick={() => openCardDetails(previewCard)}>查看详情›</Text><Text className="mine-page__new-link" onClick={openCreateSheet}>新建</Text></View></View>
                 <View className="mine-page__compact-card">
                   <Image className="mine-page__compact-card-cover" src={previewCard.coverImage || DEFAULT_CARD_MEDIA.coverImage} mode="aspectFill" />
                   <View className="mine-page__compact-card-info">

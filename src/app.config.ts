@@ -10,6 +10,7 @@ export default defineAppConfig({
     'pages/services/index',
     'pages/role-login/index',
     'pages/card-builder/index',
+    'pages/card-detail/index',
     'pages/talents/index',
     'pages/talent-detail/index',
   ],
