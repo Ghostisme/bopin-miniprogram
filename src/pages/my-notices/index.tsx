@@ -99,7 +99,10 @@ export default function MyNoticesPage() {
           <Text className="my-notices-page__identity-eyebrow">企业端</Text>
           <Text className="my-notices-page__identity-title">我的通告</Text>
         </View>
-        <Text className="my-notices-page__switch-role" onClick={switchToAnchor}>切换主播端</Text>
+        <View className="my-notices-page__identity-actions">
+          <Text className="my-notices-page__talents-link" onClick={() => Taro.navigateTo({ url: '/pages/talents/index' })}>主播库</Text>
+          <Text className="my-notices-page__switch-role" onClick={switchToAnchor}>切换主播端</Text>
+        </View>
       </View>
 
       {/* 顶部状态筛选 */}

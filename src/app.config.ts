@@ -9,6 +9,8 @@ export default defineAppConfig({
     'pages/chat/index',
     'pages/services/index',
     'pages/role-login/index',
+    'pages/talents/index',
+    'pages/talent-detail/index',
   ],
   // 分包配置:详情页和个人中心相关页面分离,主包体积控制在 1.5M 以内
   subPackages: [

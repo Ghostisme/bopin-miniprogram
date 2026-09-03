@@ -5,10 +5,11 @@
  * 默认写入 Java 服务，离线设计预览时可切换到本地数据。
  */
 
-import type { UserProfile, Resume, AnchorCard, AuthSession, UserRole } from '@/types'
-import { USE_MOCK, request, mockResponse } from '@/utils/request'
+import Taro from '@tarojs/taro'
+import type { UserProfile, Resume, AnchorCard, AuthSession, UserRole, TalentProfile } from '@/types'
+import { API_BASE_URL, USE_MOCK, request, mockResponse } from '@/utils/request'
 import { MOCK_MERCHANT_USER, MOCK_USER } from '@/mock/user'
-import { setActiveRole, setStorage, STORAGE_KEYS, tokenKeyForRole } from '@/utils/storage'
+import { getStorage, setActiveRole, setStorage, STORAGE_KEYS, tokenKeyForRole } from '@/utils/storage'
 
 /**
  * 获取当前登录用户资料。
@@ -57,12 +58,81 @@ export async function updateResume(resume: Resume): Promise<UserProfile> {
   })
 }
 
-/** 保存主播模卡。未完成模卡的主播不能解锁联系方式、沟通或报名平台服务。 */
-export async function updateAnchorCard(card: AnchorCard): Promise<UserProfile> {
-  if (USE_MOCK) return mockResponse({ ...MOCK_USER, anchorCard: card, cardCompleted: true })
+/** 新建主播模卡。一个主播最多维护五张，以便面向不同品类展示作品。 */
+export async function createAnchorCard(card: AnchorCard): Promise<UserProfile> {
+  if (USE_MOCK) {
+    const created = { ...card, id: `card_${Date.now()}`, isPrimary: !MOCK_USER.anchorCards?.length }
+    const anchorCards = [...(MOCK_USER.anchorCards ?? []), created]
+    return mockResponse({ ...MOCK_USER, anchorCards, anchorCard: anchorCards.find((item) => item.isPrimary) ?? created, cardCompleted: true })
+  }
   return request<UserProfile>({
-    url: '/users/me/card',
+    url: '/users/me/cards',
+    method: 'POST',
+    data: { ...card },
+  })
+}
+
+/** 保存一张已有主播模卡；未携带 id 时兼容旧调用并新建。 */
+export async function updateAnchorCard(card: AnchorCard): Promise<UserProfile> {
+  if (!card.id) return createAnchorCard(card)
+  if (USE_MOCK) {
+    const anchorCards = (MOCK_USER.anchorCards ?? []).map((item) => item.id === card.id ? { ...item, ...card } : item)
+    return mockResponse({ ...MOCK_USER, anchorCards, anchorCard: anchorCards.find((item) => item.isPrimary) ?? anchorCards[0] ?? null, cardCompleted: anchorCards.length > 0 })
+  }
+  return request<UserProfile>({
+    url: `/users/me/cards/${card.id}`,
     method: 'PUT',
     data: { ...card },
   })
+}
+
+/** 将指定模卡设为企业端唯一公开展示的主模卡。 */
+export async function setPrimaryAnchorCard(cardId: string): Promise<UserProfile> {
+  if (USE_MOCK) {
+    const anchorCards = (MOCK_USER.anchorCards ?? []).map((item) => ({ ...item, isPrimary: item.id === cardId }))
+    return mockResponse({ ...MOCK_USER, anchorCards, anchorCard: anchorCards.find((item) => item.isPrimary) ?? null, cardCompleted: anchorCards.length > 0 })
+  }
+  return request<UserProfile>({ url: `/users/me/cards/${cardId}/primary`, method: 'POST' })
+}
+
+/** 删除一张不再使用的模卡；删除主模卡时服务端会自动补选一张。 */
+export async function deleteAnchorCard(cardId: string): Promise<UserProfile> {
+  if (USE_MOCK) {
+    const anchorCards = (MOCK_USER.anchorCards ?? []).filter((item) => item.id !== cardId)
+    const hasPrimary = anchorCards.some((item) => item.isPrimary)
+    const normalizedCards = hasPrimary || !anchorCards.length ? anchorCards : anchorCards.map((item, index) => ({ ...item, isPrimary: index === 0 }))
+    return mockResponse({ ...MOCK_USER, anchorCards: normalizedCards, anchorCard: normalizedCards.find((item) => item.isPrimary) ?? null, cardCompleted: normalizedCards.length > 0 })
+  }
+  return request<UserProfile>({ url: `/users/me/cards/${cardId}`, method: 'DELETE' })
+}
+
+/** 将模卡录屏或图片上传到 Java 服务，返回可长期访问的完整地址。 */
+export async function uploadCardMedia(filePath: string): Promise<string> {
+  const token = getStorage<string | undefined>(tokenKeyForRole('anchor'), undefined)
+  if (!token) return Promise.reject(new Error('anchor session required'))
+  try {
+    const response = await Taro.uploadFile({
+      url: `${API_BASE_URL}/uploads/media`,
+      filePath,
+      name: 'file',
+      header: { Authorization: `Bearer ${token}` },
+    })
+    const body = typeof response.data === 'string' ? JSON.parse(response.data) : response.data
+    if (body.code !== 0 || !body.data?.path) throw new Error(body.message || '上传失败')
+    return `${API_BASE_URL.replace(/\/api\/v1\/?$/, '')}${body.data.path}`
+  } catch (error) {
+    Taro.showToast({ title: error instanceof Error ? error.message : '上传失败，请重试', icon: 'none' })
+    return Promise.reject(error)
+  }
+}
+
+/** 企业端读取已公开的主播模卡；服务端会校验 merchant 身份。 */
+export async function fetchTalents(filter: { keyword?: string; gender?: string; category?: string } = {}): Promise<TalentProfile[]> {
+  if (USE_MOCK) return mockResponse([])
+  return request<TalentProfile[]>({ url: '/talents', data: filter })
+}
+
+/** 企业端读取单个公开模卡，不返回主播手机号等私有账户字段。 */
+export async function fetchTalentById(id: string): Promise<TalentProfile> {
+  return request<TalentProfile>({ url: `/talents/${id}` })
 }

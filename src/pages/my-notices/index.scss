@@ -45,6 +45,17 @@
     font-weight: 600;
   }
 
+  &__identity-actions { display: flex; align-items: center; gap: 10rpx; }
+
+  &__talents-link {
+    padding: 8rpx 16rpx;
+    border-radius: 999rpx;
+    background: $primary;
+    color: #fff;
+    font-size: $font-xs;
+    font-weight: 700;
+  }
+
   // 顶部tab栏
   &__tabs {
     display: flex;

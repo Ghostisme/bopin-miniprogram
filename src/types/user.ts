@@ -32,8 +32,15 @@ export interface Resume {
   experienceYears?: number
 }
 
-/** 主播模卡。核心业务操作前必须完成的公开资料。 */
+/** 主播模卡。一个主播可以维护多张模卡，并选择其中一张对企业公开展示。 */
 export interface AnchorCard {
+  /** 模卡唯一标识，由服务端生成 */
+  id?: string
+  /** 是否为企业端当前展示的主模卡 */
+  isPrimary?: boolean
+  /** 创建与最后编辑时间，用于客户端排序展示 */
+  createdAt?: number
+  updatedAt?: number
   /** 对外展示的艺名 / 主播名 */
   stageName: string
   /** 擅长的直播品类 */
@@ -48,6 +55,42 @@ export interface AnchorCard {
   expectedSalary: string
   /** 可开播时间 */
   availableTime: string
+  /** 年龄 */
+  age?: number
+  /** 性别 */
+  gender?: string
+  /** 身高 */
+  height?: string
+  /** 体重 */
+  weight?: string
+  /** 鞋码 */
+  shoeSize?: string
+  /** 学历 */
+  education?: string
+  /** 意向城市 */
+  expectedCities?: string[]
+  /** 能否接受全班次或排班 */
+  acceptShift?: boolean
+  /** 代表直播品类 */
+  experienceCategory?: string
+  /** 直播账号脱敏展示 */
+  accountName?: string
+  /** 最高单场 GMV */
+  peakGmv?: string
+  /** 累计直播年限 */
+  liveYears?: number
+  /** 对外展示的优势文案 */
+  advantage?: string
+  /** 公开模卡封面，未上传时由客户端使用默认素材 */
+  coverImage?: string
+  /** 公开模卡直播切片，未上传时由客户端使用默认素材 */
+  clips?: string[]
+  /** 主播主动上传的直播录屏临时或云端地址 */
+  recordingUrl?: string
+  /** 加入的主播群名称 */
+  groupName?: string
+  /** 主播群副标题 */
+  groupDescription?: string
 }
 
 /** 当前登录用户信息 */
@@ -64,8 +107,20 @@ export interface UserProfile {
   verified: boolean
   /** 简历，未填写时为 null */
   resume: Resume | null
-  /** 主播模卡，未完成时为 null */
+  /** 企业端当前读取的主模卡，未创建时为 null */
   anchorCard: AnchorCard | null
-  /** 是否已完成模卡必填项 */
+  /** 主播名下全部模卡，仅主播身份会返回 */
+  anchorCards?: AnchorCard[]
+  /** 是否至少创建了一张完整模卡 */
   cardCompleted: boolean
+}
+
+/** 企业端检索到的公开主播资料，不包含手机号等私有账户字段。 */
+export interface TalentProfile {
+  id: string
+  nickname: string
+  avatar: string
+  verified: boolean
+  activeLabel: string
+  anchorCard: AnchorCard
 }

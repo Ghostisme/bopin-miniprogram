@@ -17,6 +17,7 @@ export const MOCK_USER: UserProfile = {
   verified: true,
   resume: null,
   anchorCard: null,
+  anchorCards: [],
   cardCompleted: false,
 }
 
@@ -29,5 +30,6 @@ export const MOCK_MERCHANT_USER: UserProfile = {
   verified: true,
   resume: null,
   anchorCard: null,
+  anchorCards: [],
   cardCompleted: true,
 }
