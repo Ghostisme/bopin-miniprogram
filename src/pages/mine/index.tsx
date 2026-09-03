@@ -10,6 +10,7 @@ import Taro, { useDidShow } from '@tarojs/taro'
 import type { AnchorCard, UserProfile } from '@/types'
 import { deleteAnchorCard, fetchUserProfile, setPrimaryAnchorCard, updateAnchorCard, uploadCardMedia } from '@/services'
 import { setActiveRole, getStorage, tokenKeyForRole } from '@/utils/storage'
+import { safeImageSource } from '@/utils/media'
 import EmptyState from '@/components/EmptyState'
 import PasteResumeModal from '@/components/PasteResumeModal'
 import './index.scss'
@@ -54,7 +55,7 @@ const normalizeCard = (card: AnchorCard): AnchorCard => ({
   ...EMPTY_CARD,
   ...card,
   clips: card.clips?.length ? card.clips : DEFAULT_CARD_MEDIA.clips,
-  coverImage: card.coverImage || DEFAULT_CARD_MEDIA.coverImage,
+  coverImage: safeImageSource(card.coverImage, DEFAULT_CARD_MEDIA.coverImage),
 })
 
 export default function MinePage() {
@@ -296,7 +297,7 @@ export default function MinePage() {
               <>
                 <View className="mine-page__complete-heading"><Text className="mine-page__section-title">我的模卡 <Text className="mine-page__card-count">{cards.length}张</Text></Text><View className="mine-page__complete-heading-actions"><Text className="mine-page__detail-link" onClick={() => openCardDetails(previewCard)}>查看详情›</Text><Text className="mine-page__edit-link" onClick={() => openCardEditor(previewCard)}>编辑</Text><Text className="mine-page__delete-link" onClick={() => removeCard(previewCard)}>删除</Text><Text className="mine-page__new-link" onClick={openCreateSheet}>新建</Text></View></View>
                 <View className="mine-page__compact-card">
-                  <Image className="mine-page__compact-card-cover" src={previewCard.coverImage || DEFAULT_CARD_MEDIA.coverImage} mode="aspectFill" />
+                  <Image className="mine-page__compact-card-cover" src={safeImageSource(previewCard.coverImage, DEFAULT_CARD_MEDIA.coverImage)} mode="aspectFill" />
                   <View className="mine-page__compact-card-info">
                     <Text className="mine-page__compact-card-name">{previewCard.stageName || user.nickname}</Text>
                     <Text className="mine-page__compact-card-meta">{previewCard.experienceYears ? `${previewCard.experienceYears} 年` : '1 年以下'}·{previewCard.age || 23}岁·{previewCard.height || '166cm'}·{previewCard.weight || '47kg'}·{previewCard.gender || '女'}</Text>
@@ -305,7 +306,7 @@ export default function MinePage() {
                   </View>
                 </View>
                 <View className="mine-page__compact-actions"><Text onClick={copyCardInfo}>复制资料</Text><Text onClick={downloadCard}>下载简历</Text><Text onClick={shareCard}>分享模卡</Text></View>
-                {cards.length > 1 && <><View className="mine-page__card-list-header"><Text>其他模卡 {cards.length - 1} 张</Text><Text onClick={openCreateSheet}>+ 新建一张</Text></View><View className="mine-page__card-list">{cards.filter((card) => !card.isPrimary).map((card, index) => <View className="mine-page__card-list-item" key={card.id || `${card.stageName}-${index}`}><Image className="mine-page__card-list-cover" src={card.coverImage || DEFAULT_CARD_MEDIA.coverImage} mode="aspectFill" /><View className="mine-page__card-list-info"><View><Text>{card.stageName || '未命名模卡'}</Text></View><Text>{card.categories.join(' / ') || '待补充品类'} · {card.city || '待补充城市'}</Text></View><View className="mine-page__card-list-actions"><Text onClick={() => openCardDetails(card)}>查看</Text><Text onClick={() => makePrimary(card)}>设为主展示</Text><Text onClick={() => openCardEditor(card)}>编辑</Text><Text className="is-delete" onClick={() => removeCard(card)}>删除</Text></View></View>)}</View></>}
+                {cards.length > 1 && <><View className="mine-page__card-list-header"><Text>其他模卡 {cards.length - 1} 张</Text><Text onClick={openCreateSheet}>+ 新建一张</Text></View><View className="mine-page__card-list">{cards.filter((card) => !card.isPrimary).map((card, index) => <View className="mine-page__card-list-item" key={card.id || `${card.stageName}-${index}`}><Image className="mine-page__card-list-cover" src={safeImageSource(card.coverImage, DEFAULT_CARD_MEDIA.coverImage)} mode="aspectFill" /><View className="mine-page__card-list-info"><View><Text>{card.stageName || '未命名模卡'}</Text></View><Text>{card.categories.join(' / ') || '待补充品类'} · {card.city || '待补充城市'}</Text></View><View className="mine-page__card-list-actions"><Text onClick={() => openCardDetails(card)}>查看</Text><Text onClick={() => makePrimary(card)}>设为主展示</Text><Text onClick={() => openCardEditor(card)}>编辑</Text><Text className="is-delete" onClick={() => removeCard(card)}>删除</Text></View></View>)}</View></>}
               </>
             ) : (
               <>

@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 import type { TalentProfile } from '@/types'
 import { fetchTalentById } from '@/services'
 import { setActiveRole } from '@/utils/storage'
+import { isImageSource, isVideoSource, safeImageSource } from '@/utils/media'
 import EmptyState from '@/components/EmptyState'
 import cardCover from '@/assets/card/cover.jpg'
 import clipOne from '@/assets/card/clip-1.jpg'
@@ -34,14 +35,15 @@ export default function TalentDetailPage() {
   if (!talent) return <View className="talent-detail"><EmptyState text="主播模卡暂不可用" /></View>
 
   const card = talent.anchorCard
-  const clips = card.clips?.length ? card.clips : DEFAULT_CLIPS
+  const clips = card.recordingClips?.length ? card.recordingClips : card.clips?.length ? card.clips : DEFAULT_CLIPS
+  const heroImage = safeImageSource(card.coverImage, cardCover)
   return (
     <View className="talent-detail">
       <View className="talent-detail__nav"><Text onClick={() => Taro.navigateBack()}>‹</Text><Text>{card.stageName || talent.nickname}</Text><Text>•••</Text></View>
 
       <View className="talent-detail__hero">
-        {playing && card.recordingUrl ? <Video className="talent-detail__video" src={card.recordingUrl} poster={card.coverImage || cardCover} controls autoplay /> : <Image src={card.coverImage || cardCover} mode="aspectFill" />}
-        {!playing && <><View className="talent-detail__shade" /><Text className="talent-detail__count">01 / {String(clips.length + 1).padStart(2, '0')}</Text><Text className="talent-detail__name">{card.stageName || talent.nickname}</Text><Text className="talent-detail__intro">{card.advantage || card.intro}</Text><Text className="talent-detail__play" onClick={() => card.recordingUrl ? setPlaying(true) : Taro.showToast({ title: '该主播暂未上传录屏', icon: 'none' })}>▶</Text></>}
+        {playing && isVideoSource(card.recordingUrl) ? <Video className="talent-detail__video" src={card.recordingUrl} poster={heroImage} controls autoplay /> : <Image src={heroImage} mode="aspectFill" />}
+        {!playing && <><View className="talent-detail__shade" /><Text className="talent-detail__count">01 / {String(clips.length + 1).padStart(2, '0')}</Text><Text className="talent-detail__name">{card.stageName || talent.nickname}</Text><Text className="talent-detail__intro">{card.advantage || card.intro}</Text><Text className="talent-detail__play" onClick={() => isVideoSource(card.recordingUrl) ? setPlaying(true) : Taro.showToast({ title: '该主播暂未上传录屏', icon: 'none' })}>▶</Text></>}
       </View>
 
       <View className="talent-detail__group">
@@ -50,7 +52,7 @@ export default function TalentDetailPage() {
       </View>
 
       <View className="talent-detail__clips-head"><Text>Clips <Text>直播切片</Text></Text><Text>全部 {clips.length} →</Text></View>
-      <View className="talent-detail__clips">{clips.map((clip, index) => <View key={`${clip}-${index}`}><Image src={clip} mode="aspectFill" /><Text>{card.categories[index] || '直播'}</Text></View>)}</View>
+      <View className="talent-detail__clips">{clips.map((clip, index) => <View key={`${clip}-${index}`}>{isImageSource(clip) ? <Image src={clip} mode="aspectFill" /> : <Video src={clip} poster={heroImage} controls={false} />}<Text>{card.categories[index] || '直播'}</Text></View>)}</View>
 
       <Section title="Profile 基本信息"><View className="talent-detail__facts"><Fact label="年龄" value={`${card.age || 23}岁`} /><Fact label="性别" value={card.gender || '女'} /><Fact label="身高" value={card.height || '166cm'} /><Fact label="体重" value={card.weight || '47kg'} /><Fact label="鞋码" value={card.shoeSize || '37码'} /><Fact label="学历" value={card.education || '本科及以上'} /></View></Section>
       <Section title="Intention 求职意向"><View className="talent-detail__expect"><Text>兼职期望</Text><Text>{card.expectedSalary || '面议'}</Text></View><View className="talent-detail__columns"><Fact label="意向城市" value={(card.expectedCities || [card.city]).join('、')} /><Fact label="接受全班" value={card.acceptShift ? '接受' : '不接受'} /></View><View className="talent-detail__tags">{card.categories.map((item) => <Text key={item}>{item}</Text>)}</View></Section>

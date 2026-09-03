@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 import type { AnchorCard } from '@/types'
 import { deleteAnchorCard, fetchUserProfile, setPrimaryAnchorCard } from '@/services'
 import { getStorage, setActiveRole, tokenKeyForRole } from '@/utils/storage'
+import { isImageSource, safeImageSource } from '@/utils/media'
 import EmptyState from '@/components/EmptyState'
 import cardCover from '@/assets/card/cover.jpg'
 import clipOne from '@/assets/card/clip-1.jpg'
@@ -13,8 +14,6 @@ import clipThree from '@/assets/card/clip-3.jpg'
 import './index.scss'
 
 const DEFAULT_CLIPS = [clipOne, clipTwo, clipThree]
-const IMAGE_SOURCE = /\.(?:avif|gif|jpe?g|png|webp)(?:\?|$)/i
-
 export default function CardDetailPage() {
   const [card, setCard] = useState<AnchorCard | null>(null)
   const [loading, setLoading] = useState(true)
@@ -44,8 +43,8 @@ export default function CardDetailPage() {
   if (!card) return <View className="card-detail"><EmptyState text="模卡暂不可用" /></View>
 
   const clips = card.recordingClips?.length ? card.recordingClips : card.clips?.length ? card.clips : DEFAULT_CLIPS
-  const heroImage = card.coverImage && IMAGE_SOURCE.test(card.coverImage) ? card.coverImage : cardCover
-  const heroVideo = card.recordingUrl && !IMAGE_SOURCE.test(card.recordingUrl) ? card.recordingUrl : ''
+  const heroImage = safeImageSource(card.coverImage, cardCover)
+  const heroVideo = card.recordingUrl && !isImageSource(card.recordingUrl) ? card.recordingUrl : ''
   const title = card.stageName || '未命名模卡'
 
   const handleManageAction = async (action: string) => {
@@ -111,7 +110,7 @@ export default function CardDetailPage() {
 
       <View className="card-detail__clips-head"><Text>Clips <Text>直播切片</Text></Text><Text>全部 {clips.length} →</Text></View>
       <View className="card-detail__clips">{clips.slice(0, 4).map((clip, index) => <View className="card-detail__clip" key={`${clip}-${index}`}>
-        {IMAGE_SOURCE.test(clip) ? <Image src={clip} mode="aspectFill" /> : <Video src={clip} poster={heroImage} controls={false} />}
+        {isImageSource(clip) ? <Image src={clip} mode="aspectFill" /> : <Video src={clip} poster={heroImage} controls={false} />}
         {index === 0 && <Text className="card-detail__clip-cover">封面</Text>}
         <Text className="card-detail__clip-title">{card.recordingTitles?.[index] || card.categories[index] || (index === 0 ? title : '直播切片')}</Text>
         <Text className="card-detail__clip-play">▶</Text>

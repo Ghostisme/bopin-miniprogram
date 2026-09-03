@@ -9,6 +9,7 @@ import Taro, { useDidShow, useLoad } from '@tarojs/taro'
 import type { AnchorCard, UserProfile } from '@/types'
 import { fetchUserProfile, updateAnchorCard, uploadCardMedia } from '@/services'
 import { getStorage, setActiveRole, tokenKeyForRole } from '@/utils/storage'
+import { isImageSource } from '@/utils/media'
 import cardCover from '@/assets/card/cover.jpg'
 import './index.scss'
 
@@ -161,7 +162,7 @@ export default function CardBuilderPage() {
   const removeRecording = (index: number) => {
     const nextClips = recordingClips.filter((_, itemIndex) => itemIndex !== index)
     const nextTitles = recordingTitles.filter((_, itemIndex) => itemIndex !== index)
-    setDraft((current) => ({ ...current, recordingUrl: nextClips[0] || '', recordingClips: nextClips, recordingTitles: nextTitles, coverImage: current.coverImage === recordingClips[index] ? (nextClips[0] || cardCover) : current.coverImage }))
+    setDraft((current) => ({ ...current, recordingUrl: nextClips[0] || '', recordingClips: nextClips, recordingTitles: nextTitles, coverImage: current.coverImage === recordingClips[index] ? (isImageSource(nextClips[0]) ? nextClips[0] : cardCover) : (isImageSource(current.coverImage) ? current.coverImage : cardCover) }))
   }
 
   const updateRecordingTitle = (index: number, title: string) => {
@@ -170,7 +171,15 @@ export default function CardBuilderPage() {
     update('recordingTitles', nextTitles)
   }
 
-  const chooseCover = (index: number) => update('coverImage', recordingClips[index])
+  const chooseCover = (index: number) => {
+    const selected = recordingClips[index]
+    if (!isImageSource(selected)) {
+      update('coverImage', cardCover)
+      Taro.showToast({ title: '视频暂使用默认封面', icon: 'none' })
+      return
+    }
+    update('coverImage', selected)
+  }
 
   const toggleCategory = (category: string) => {
     const next = selectedCategories.has(category) ? draft.categories.filter((item) => item !== category) : [...draft.categories, category]
@@ -217,7 +226,7 @@ export default function CardBuilderPage() {
     }
     setSaving(true)
     try {
-      await updateAnchorCard({ ...draft, intro, categories, clips: draft.clips || [] })
+      await updateAnchorCard({ ...draft, intro, categories, coverImage: isImageSource(draft.coverImage) ? draft.coverImage : cardCover, clips: draft.clips || [] })
       Taro.showToast({ title: '模卡已保存', icon: 'success' })
       setTimeout(() => Taro.navigateBack(), 350)
     } catch {

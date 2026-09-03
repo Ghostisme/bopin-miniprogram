@@ -4,6 +4,7 @@ import Taro, { useDidShow } from '@tarojs/taro'
 import type { TalentProfile } from '@/types'
 import { fetchTalents } from '@/services'
 import { getStorage, setActiveRole, tokenKeyForRole } from '@/utils/storage'
+import { safeImageSource } from '@/utils/media'
 import EmptyState from '@/components/EmptyState'
 import cardCover from '@/assets/card/cover.jpg'
 import clipOne from '@/assets/card/clip-1.jpg'
@@ -87,7 +88,7 @@ export default function TalentsPage() {
         {list.map((talent, index) => {
           const card = talent.anchorCard
           return <View className="talents-page__card" key={talent.id} onClick={() => Taro.navigateTo({ url: `/pages/talent-detail/index?id=${talent.id}` })}>
-            <Image src={card.coverImage || TALENT_IMAGES[index % TALENT_IMAGES.length]} mode="aspectFill" />
+            <Image src={safeImageSource(card.coverImage, TALENT_IMAGES[index % TALENT_IMAGES.length])} mode="aspectFill" />
             <View className="talents-page__card-main">
               <View className="talents-page__card-head"><Text>{card.stageName || talent.nickname}</Text><Text>{talent.activeLabel}</Text></View>
               <Text className="talents-page__meta">{card.age || 23}岁 · {card.height || '166cm'} · {card.weight || '47kg'} · {card.gender || '女'}</Text>
