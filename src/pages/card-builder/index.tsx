@@ -12,7 +12,8 @@ import { getStorage, setActiveRole, tokenKeyForRole } from '@/utils/storage'
 import cardCover from '@/assets/card/cover.jpg'
 import './index.scss'
 
-const STEPS = ['上传录屏', '基本信息', '身型学历', '求职意向', '直播经验']
+// 顺序与小程序现有建卡链路一致：先补身型，再上传作品，最后完成意向与经验。
+const STEPS = ['身型学历', '上传录屏', '求职意向', '基本信息', '直播经验']
 const CITIES = ['北京', '上海', '广州', '深圳', '杭州', '厦门', '成都', '重庆']
 const CATEGORIES = ['服饰', '美妆', '数码', '食品酒饮', '珠宝', '家电', '日用家具', '户外运动', '母婴宠物', '奢品', '本地生活', '汽车', '其他']
 const EDUCATIONS = ['高中及以下', '大专', '本科', '本科及以上']
@@ -161,13 +162,13 @@ export default function CardBuilderPage() {
       <View className="card-builder__nav"><Text onClick={() => step > 0 ? setStep((current) => current - 1) : Taro.navigateBack()}>‹</Text><Text>创建模卡</Text><Text className="card-builder__nav-count">{step + 1}/{STEPS.length}</Text></View>
       <View className="card-builder__progress">{STEPS.map((label, index) => <View key={label} className={`card-builder__progress-item ${index <= step ? 'is-active' : ''}`}><Text>{index + 1}</Text><Text>{label}</Text></View>)}</View>
 
-      {step === 0 && <RecordingStep clips={recordingClips} titles={recordingTitles} coverImage={draft.coverImage || ''} uploading={uploading} onUpload={uploadRecording} onRemove={removeRecording} onTitle={updateRecordingTitle} onCover={chooseCover} />}
-      {step === 1 && <BasicStep draft={draft} update={update} />}
-      {step === 2 && <BodyStep draft={draft} update={update} onEducation={cycleEducation} />}
-      {step === 3 && <IntentStep draft={draft} update={update} cityPickerVisible={cityPickerVisible} onCityPicker={() => setCityPickerVisible((visible) => !visible)} onCity={toggleCity} onCategory={toggleCategory} />}
+      {step === 0 && <BodyStep draft={draft} update={update} onEducation={cycleEducation} />}
+      {step === 1 && <RecordingStep clips={recordingClips} titles={recordingTitles} coverImage={draft.coverImage || ''} uploading={uploading} onUpload={uploadRecording} onRemove={removeRecording} onTitle={updateRecordingTitle} onCover={chooseCover} />}
+      {step === 2 && <IntentStep draft={draft} update={update} cityPickerVisible={cityPickerVisible} onCityPicker={() => setCityPickerVisible((visible) => !visible)} onCity={toggleCity} onCategory={toggleCategory} />}
+      {step === 3 && <BasicStep draft={draft} update={update} />}
       {step === 4 && <ExperienceStep draft={draft} update={update} />}
 
-      <View className="card-builder__footer"><View className={`card-builder__next ${saving || uploading ? 'is-disabled' : ''}`} onClick={nextStep}>{saving ? '保存中…' : step === STEPS.length - 1 ? '完成并保存模卡' : '下一步'}</View>{step === 0 && <Text className="card-builder__skip" onClick={() => setStep(1)}>暂时跳过</Text>}</View>
+      <View className="card-builder__footer"><View className={`card-builder__next ${saving || uploading ? 'is-disabled' : ''}`} onClick={nextStep}>{saving ? '保存中…' : step === STEPS.length - 1 ? '完成并保存模卡' : '下一步'}</View>{step === 0 && <Text className="card-builder__skip" onClick={() => setStep(1)}>跳过</Text>}</View>
     </View>
   )
 }
