@@ -53,3 +53,16 @@
 .card-builder__next.is-disabled { opacity: 0.55; }
 .card-builder__skip { display: block; margin-top: 14rpx; color: $secondary; font-size: 22rpx; text-align: center; }
 .card-builder__loading { display: block; padding-top: 40vh; color: $text-tertiary; text-align: center; }
+.card-builder__notice-modal { position: fixed; inset: 0; z-index: 30; }
+.card-builder__notice-mask { position: absolute; inset: 0; background: rgba(20, 20, 24, 0.45); }
+.card-builder__notice-panel { position: absolute; right: 24rpx; bottom: 246rpx; left: 24rpx; padding: 28rpx; border-radius: 20rpx; background: #fff; box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.18); }
+.card-builder__notice-heading { display: flex; align-items: center; color: $text-primary; font-size: 25rpx; }
+.card-builder__notice-badge { display: inline-flex; width: 40rpx; height: 40rpx; align-items: center; justify-content: center; margin-right: 12rpx; border-radius: 50%; background: $secondary; color: #fff; font-size: 21rpx; }
+.card-builder__notice-en { display: block; margin: 30rpx 0 16rpx; color: $text-primary; font-family: Georgia, serif; font-size: 23rpx; }
+.card-builder__notice-option { display: flex; min-height: 66rpx; align-items: center; justify-content: space-between; border-top: 1rpx solid $border-light; color: $text-primary; font-size: 24rpx; }
+.card-builder__toggle { color: #d9dce2; font-size: 31rpx; }
+.card-builder__toggle.is-on { color: $success; }
+.card-builder__notice-tip { display: block; margin: 18rpx 0 22rpx; color: $text-tertiary; font-size: 21rpx; }
+.card-builder__notice-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 14rpx; }
+.card-builder__notice-actions text { padding: 16rpx 0; border-radius: $radius-sm; background: #f2f3f5; color: $text-secondary; font-size: 24rpx; text-align: center; }
+.card-builder__notice-actions text:last-child { background: #a0e5c2; color: #fff; }
