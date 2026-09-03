@@ -4,8 +4,9 @@ import prodConfig from './prod'
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig(async (merge, { command, mode }) => {
-  // Keep the WeChat output stable so H5 builds cannot remove dist/app.json.
-  const outputRoot = process.env.TARO_ENV === 'h5' ? 'dist-h5' : 'dist'
+  // Keep the WeChat output stable. H5 is outside the project root so WeChat
+  // DevTools cannot count its web bundles in the mini-program package.
+  const outputRoot = process.env.TARO_ENV === 'h5' ? '../bopin-miniprogram-h5' : 'dist'
 
   const baseConfig = {
     projectName: 'bopin-miniprogram',
