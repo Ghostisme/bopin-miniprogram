@@ -1,10 +1,10 @@
 /**
- * 模卡创建流程：录屏作品 -> 基本信息 -> 身型学历 -> 求职意向 -> 直播经验。
+ * 模卡创建流程：录屏作品 -> 求职意向 -> 基本信息 -> 直播经验 -> 身型学历 -> 自身优势。
  * 每一步都只写入本地草稿，最后一步统一保存，避免上传作品后卡在半成品页面。
  */
 
 import { useMemo, useState } from 'react'
-import { Image, Input, Text, Textarea, Video, View } from '@tarojs/components'
+import { Image, Input, ScrollView, Text, Textarea, Video, View } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import type { AnchorCard, UserProfile } from '@/types'
 import { fetchUserProfile, updateAnchorCard, uploadCardMedia } from '@/services'
@@ -12,8 +12,8 @@ import { getStorage, setActiveRole, tokenKeyForRole } from '@/utils/storage'
 import cardCover from '@/assets/card/cover.jpg'
 import './index.scss'
 
-// 顺序与参考截图一致：先上传作品，再补求职信息，最后完善身型学历。
-const STEPS = ['上传录屏', '求职意向', '基本信息', '直播经验', '身型、学历']
+// 顺序与参考截图一致：先上传作品，再补求职信息，最后填写个人优势。
+const STEPS = ['上传录屏', '求职意向', '基本信息', '直播经验', '身型、学历', '自身优势']
 type RegionGroup = { province: string; cities: string[] }
 
 const REGION_GROUPS: RegionGroup[] = [
@@ -54,7 +54,13 @@ const REGION_GROUPS: RegionGroup[] = [
 ]
 const HOT_CITIES = ['北京', '上海', '广州', '深圳', '杭州', '成都', '重庆', '厦门', '武汉', '西安', '郑州', '合肥']
 const CATEGORIES = ['服饰', '美妆', '数码', '食品酒饮', '珠宝', '家电', '日用家具', '户外运动', '母婴宠物', '奢品', '本地生活', '汽车', '其他']
-const EDUCATIONS = ['高中及以下', '大专', '本科', '本科及以上']
+const EDUCATIONS = ['初中', '职高/高中', '大专', '本科及以上']
+const EXPERIENCE_OPTIONS = [
+  { label: '1 年以下', value: 0 },
+  { label: '1 年', value: 1 },
+  { label: '2 年', value: 2 },
+  { label: '3 年以上', value: 3 },
+]
 
 const newDraft = (user?: UserProfile): AnchorCard => ({
   stageName: user?.nickname || '',
@@ -95,6 +101,9 @@ export default function CardBuilderPage() {
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [cityPickerVisible, setCityPickerVisible] = useState(false)
+  const [birthPickerVisible, setBirthPickerVisible] = useState(false)
+  const [experiencePickerVisible, setExperiencePickerVisible] = useState(false)
+  const [educationPickerVisible, setEducationPickerVisible] = useState(false)
   const [noticePromptVisible, setNoticePromptVisible] = useState(false)
   const [noticePreferences, setNoticePreferences] = useState([false, false, false])
 
@@ -192,13 +201,14 @@ export default function CardBuilderPage() {
 
   const save = async () => {
     const categories = draft.categories.map((item) => item.trim()).filter(Boolean)
-    if (!draft.stageName.trim() || !draft.city.trim() || !draft.intro.trim() || !categories.length || draft.experienceYears < 0) {
-      Taro.showToast({ title: '请补齐艺名、城市、品类、经验和简介', icon: 'none' })
+    const intro = draft.intro.trim() || draft.advantage?.trim() || ''
+    if (!draft.stageName.trim() || !draft.birthMonth?.trim() || !draft.city.trim() || !intro || !categories.length || draft.experienceYears < 0) {
+      Taro.showToast({ title: '请补齐称呼、出生年月、城市、品类、经验和简介', icon: 'none' })
       return
     }
     setSaving(true)
     try {
-      await updateAnchorCard({ ...draft, categories, clips: draft.clips || [] })
+      await updateAnchorCard({ ...draft, intro, categories, clips: draft.clips || [] })
       Taro.showToast({ title: '模卡已保存', icon: 'success' })
       setTimeout(() => Taro.navigateBack(), 350)
     } catch {
@@ -208,10 +218,7 @@ export default function CardBuilderPage() {
     }
   }
 
-  const cycleEducation = () => {
-    const current = EDUCATIONS.indexOf(draft.education || '')
-    update('education', EDUCATIONS[(current + 1) % EDUCATIONS.length])
-  }
+  const updateAdvantage = (value: string) => setDraft((current) => ({ ...current, advantage: value, intro: value }))
 
   const continueAfterNoticePrompt = () => {
     setNoticePromptVisible(false)
@@ -226,11 +233,16 @@ export default function CardBuilderPage() {
 
       {step === 0 && <RecordingStep clips={recordingClips} titles={recordingTitles} coverImage={draft.coverImage || ''} uploading={uploading} onUpload={uploadRecording} onRemove={removeRecording} onTitle={updateRecordingTitle} onCover={chooseCover} />}
       {step === 1 && <IntentStep draft={draft} update={update} cityPickerVisible={cityPickerVisible} onCityPicker={() => setCityPickerVisible((visible) => !visible)} onCity={toggleCity} onCategory={toggleCategory} />}
-      {step === 2 && <BasicStep draft={draft} update={update} />}
-      {step === 3 && <ExperienceStep draft={draft} update={update} />}
-      {step === 4 && <BodyStep draft={draft} update={update} onEducation={cycleEducation} />}
+      {step === 2 && <BasicStep draft={draft} update={update} onBirthMonth={() => setBirthPickerVisible(true)} />}
+      {step === 3 && <ExperienceStep draft={draft} update={update} onExperience={() => setExperiencePickerVisible(true)} />}
+      {step === 4 && <BodyStep draft={draft} update={update} onEducation={() => setEducationPickerVisible(true)} />}
+      {step === 5 && <AdvantageStep value={draft.advantage || ''} onChange={updateAdvantage} />}
 
-      <View className="card-builder__footer"><View className={`card-builder__next ${saving || uploading ? 'is-disabled' : ''}`} onClick={nextStep}>{saving ? '保存中…' : step === STEPS.length - 1 ? '完成并保存模卡' : '下一步'}</View>{step === 0 && <Text className="card-builder__skip" onClick={() => setStep(1)}>跳过</Text>}</View>
+      {step === 2 && birthPickerVisible && <BirthPicker value={draft.birthMonth || ''} age={draft.age || 23} onClose={() => setBirthPickerVisible(false)} onConfirm={(value) => { update('birthMonth', value); setBirthPickerVisible(false) }} />}
+      {step === 3 && experiencePickerVisible && <OptionPicker title="直播经验" value={draft.experienceYears} options={EXPERIENCE_OPTIONS.map((item) => ({ label: item.label, value: item.value }))} onClose={() => setExperiencePickerVisible(false)} onSelect={(value) => { update('experienceYears', value); update('liveYears', value); setExperiencePickerVisible(false) }} />}
+      {step === 4 && educationPickerVisible && <OptionPicker title="学历" value={draft.education || ''} options={EDUCATIONS.map((item) => ({ label: item, value: item }))} onClose={() => setEducationPickerVisible(false)} onSelect={(value) => { update('education', value); setEducationPickerVisible(false) }} />}
+
+      <View className="card-builder__footer"><View className={`card-builder__next ${saving || uploading ? 'is-disabled' : ''}`} onClick={nextStep}>{saving ? '保存中…' : step === STEPS.length - 1 ? '完成' : '下一步'}</View>{step === 0 && <Text className="card-builder__skip" onClick={() => setStep(1)}>跳过</Text>}</View>
       {noticePromptVisible && <NoticePrompt preferences={noticePreferences} onToggle={(index) => setNoticePreferences((current) => current.map((value, itemIndex) => itemIndex === index ? !value : value))} onClose={continueAfterNoticePrompt} />}
     </View>
   )
@@ -248,8 +260,8 @@ function RecordingStep({ clips, titles, coverImage, uploading, onUpload, onRemov
   </View>
 }
 
-function BasicStep({ draft, update }: { draft: AnchorCard; update: <K extends keyof AnchorCard>(key: K, value: AnchorCard[K]) => void }) {
-  return <View className="card-builder__content"><Field label="艺名" required value={draft.stageName} placeholder="请输入" onInput={(value) => update('stageName', value)} /><Field label="出生年月" value={draft.birthMonth || ''} placeholder="例如：2001-08" onInput={(value) => update('birthMonth', value)} /><Text className="card-builder__field-label">性别<Text>（必填）</Text></Text><View className="card-builder__radio-row">{['女', '男'].map((gender) => <Text key={gender} className={draft.gender === gender ? 'is-selected' : ''} onClick={() => update('gender', gender)}><Text className="card-builder__radio">{draft.gender === gender ? '◉' : '○'}</Text>{gender}</Text>)}</View><Field label="直播过的品类" value={draft.experienceCategory || ''} placeholder="请输入，例如：美妆、服饰" onInput={(value) => update('experienceCategory', value)} /></View>
+function BasicStep({ draft, update, onBirthMonth }: { draft: AnchorCard; update: <K extends keyof AnchorCard>(key: K, value: AnchorCard[K]) => void; onBirthMonth: () => void }) {
+  return <View className="card-builder__content"><Field label="称呼" required value={draft.stageName} placeholder="请输入" onInput={(value) => update('stageName', value)} /><View className="card-builder__field"><Text className="card-builder__field-label">出生年月<Text>（必填）</Text></Text><View className="card-builder__select" onClick={onBirthMonth}><Text>{draft.birthMonth || '请选择'}</Text><Text>›</Text></View></View><Text className="card-builder__field-label">性别<Text>（必填）</Text></Text><View className="card-builder__radio-row">{['女', '男'].map((gender) => <Text key={gender} className={draft.gender === gender ? 'is-selected' : ''} onClick={() => update('gender', gender)}><Text className="card-builder__radio">{draft.gender === gender ? '◉' : '○'}</Text>{gender}</Text>)}</View><Field label="直播过的品类" value={draft.experienceCategory || ''} placeholder="请输入，例如：美妆、服饰" onInput={(value) => update('experienceCategory', value)} /></View>
 }
 
 function BodyStep({ draft, update, onEducation }: { draft: AnchorCard; update: <K extends keyof AnchorCard>(key: K, value: AnchorCard[K]) => void; onEducation: () => void }) {
@@ -279,8 +291,30 @@ function CityPicker({ currentCity, selected, onCity, onClose }: { currentCity: s
   </View>
 }
 
-function ExperienceStep({ draft, update }: { draft: AnchorCard; update: <K extends keyof AnchorCard>(key: K, value: AnchorCard[K]) => void }) {
-  return <View className="card-builder__content"><Field label="直播经验" value={draft.experienceYears ? `${draft.experienceYears} 年` : ''} placeholder="例如：1 年以下" onInput={(value) => update('experienceYears', Number(value.replace(/\D/g, '')) || 0)} /><Field label="直播过的账号" value={draft.accountName || ''} placeholder="请输入" onInput={(value) => update('accountName', value)} /><Text className="card-builder__field-label">自然流起号经验<Text>（建议填写）</Text></Text><View className="card-builder__radio-row"><Text className={draft.naturalTraffic ? 'is-selected' : ''} onClick={() => update('naturalTraffic', false)}><Text className="card-builder__radio">{!draft.naturalTraffic ? '◉' : '○'}</Text>无</Text><Text className={draft.naturalTraffic ? 'is-selected' : ''} onClick={() => update('naturalTraffic', true)}><Text className="card-builder__radio">{draft.naturalTraffic ? '◉' : '○'}</Text>有</Text></View><Text className="card-builder__field-label">个人优势介绍<Text>（不超过200字）</Text></Text><Textarea className="card-builder__textarea" value={draft.advantage || ''} maxlength={200} placeholder="请输入你的个人优势介绍" onInput={(event) => update('advantage', event.detail.value)} /><Text className="card-builder__field-label">模卡一句话介绍<Text>（必填）</Text></Text><Textarea className="card-builder__textarea" value={draft.intro} maxlength={200} placeholder="例如：亲和力强、学习能力快" onInput={(event) => update('intro', event.detail.value)} /></View>
+function ExperienceStep({ draft, update, onExperience }: { draft: AnchorCard; update: <K extends keyof AnchorCard>(key: K, value: AnchorCard[K]) => void; onExperience: () => void }) {
+  const experienceLabel = EXPERIENCE_OPTIONS.find((item) => item.value === draft.experienceYears)?.label || '1 年以下'
+  return <View className="card-builder__content"><View className="card-builder__field"><Text className="card-builder__field-label">直播经验<Text>（建议填写）</Text></Text><View className="card-builder__select" onClick={onExperience}><Text>{experienceLabel}</Text><Text>›</Text></View></View><Field label="直播过的账号" value={draft.accountName || ''} placeholder="请输入" onInput={(value) => update('accountName', value)} /><Text className="card-builder__field-label">自然流起号经验<Text>（建议填写）</Text></Text><View className="card-builder__radio-row"><Text className={draft.naturalTraffic ? 'is-selected' : ''} onClick={() => update('naturalTraffic', false)}><Text className="card-builder__radio">{!draft.naturalTraffic ? '◉' : '○'}</Text>无</Text><Text className={draft.naturalTraffic ? 'is-selected' : ''} onClick={() => update('naturalTraffic', true)}><Text className="card-builder__radio">{draft.naturalTraffic ? '◉' : '○'}</Text>有</Text></View></View>
+}
+
+function AdvantageStep({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  return <View className="card-builder__content"><Text className="card-builder__field-label">自身优势<Text>（建议填写）</Text></Text><Textarea className="card-builder__textarea card-builder__textarea--large" value={value} maxlength={200} placeholder="请输入你的个人优势介绍" onInput={(event) => onChange(event.detail.value)} /></View>
+}
+
+function OptionPicker({ title, value, options, onClose, onSelect }: { title: string; value: string | number; options: Array<{ label: string; value: string | number }>; onClose: () => void; onSelect: (value: any) => void }) {
+  return <View className="card-builder__option-picker"><View className="card-builder__option-picker-mask" onClick={onClose} /><View className="card-builder__option-picker-panel"><Text className="card-builder__option-picker-title">{title}</Text>{options.map((option) => <Text key={option.label} className={`card-builder__option-picker-item ${String(option.value) === String(value) ? 'is-selected' : ''}`} onClick={() => onSelect(option.value)}>{option.label}{String(option.value) === String(value) && <Text>✓</Text>}</Text>)}</View></View>
+}
+
+function BirthPicker({ value, age, onClose, onConfirm }: { value: string; age: number; onClose: () => void; onConfirm: (value: string) => void }) {
+  const currentYear = new Date().getFullYear()
+  const initialYear = value.match(/^(\d{4})-/)?.[1] || String(currentYear - age)
+  const initialMonth = value.match(/-(\d{2})$/)?.[1] || '01'
+  const [year, setYear] = useState(initialYear)
+  const [month, setMonth] = useState(initialMonth)
+  const years = Array.from({ length: 61 }, (_, index) => String(currentYear - 60 + index))
+  const months = Array.from({ length: 12 }, (_, index) => String(index + 1).padStart(2, '0'))
+  const yearScrollTop = Math.max(0, (years.indexOf(year) - 2) * 70)
+  const monthScrollTop = Math.max(0, (months.indexOf(month) - 2) * 70)
+  return <View className="card-builder__birth-picker"><View className="card-builder__birth-picker-mask" onClick={onClose} /><View className="card-builder__birth-picker-panel"><Text className="card-builder__birth-picker-title">选择器</Text><View className="card-builder__birth-picker-columns"><ScrollView className="card-builder__birth-picker-column" scrollY scrollTop={yearScrollTop}>{years.map((item) => <Text key={item} className={item === year ? 'is-selected' : ''} onClick={() => setYear(item)}>{item}年</Text>)}</ScrollView><ScrollView className="card-builder__birth-picker-column" scrollY scrollTop={monthScrollTop}>{months.map((item) => <Text key={item} className={item === month ? 'is-selected' : ''} onClick={() => setMonth(item)}>{item}月</Text>)}</ScrollView></View><View className="card-builder__birth-picker-actions"><Text onClick={onClose}>取消</Text><Text onClick={() => onConfirm(`${year}-${month}`)}>确认</Text></View></View></View>
 }
 
 function Field({ label, required, value, placeholder, suffix, onInput }: { label: string; required?: boolean; value: string; placeholder: string; suffix?: string; onInput: (value: string) => void }) {

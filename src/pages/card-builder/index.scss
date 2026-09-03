@@ -81,6 +81,7 @@
 .card-builder__category-grid text { padding: 20rpx 6rpx; border: 1rpx solid transparent; border-radius: $radius-sm; background: #fff; color: $text-secondary; font-size: 22rpx; text-align: center; }
 .card-builder__category-grid text.is-selected { border-color: $secondary; background: $primary-pale; color: $secondary; }
 .card-builder__textarea { display: block; width: 100%; min-height: 150rpx; box-sizing: border-box; padding: 22rpx; border-radius: $radius-md; background: #fff; color: $text-primary; font-size: 25rpx; }
+.card-builder__textarea--large { min-height: 410rpx; }
 .card-builder__footer { position: fixed; right: 0; bottom: 0; left: 0; z-index: 10; padding: 16rpx 28rpx calc(16rpx + env(safe-area-inset-bottom)); background: rgba(245, 246, 250, 0.96); }
 .card-builder__next { display: flex; height: 76rpx; align-items: center; justify-content: center; border-radius: 999rpx; background: $primary; color: #fff; font-size: 29rpx; font-weight: 700; }
 .card-builder__next.is-disabled { opacity: 0.55; }
@@ -102,3 +103,23 @@
 .card-builder__notice-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 14rpx; }
 .card-builder__notice-actions text { padding: 16rpx 0; border-radius: $radius-sm; background: #f2f3f5; color: $text-secondary; font-size: 24rpx; text-align: center; }
 .card-builder__notice-actions text:last-child { background: #a0e5c2; color: #fff; }
+
+.card-builder__option-picker,
+.card-builder__birth-picker { position: fixed; inset: 0; z-index: 35; }
+.card-builder__option-picker-mask,
+.card-builder__birth-picker-mask { position: absolute; inset: 0; background: rgba(20, 20, 24, 0.62); }
+.card-builder__option-picker-panel { position: absolute; right: 0; bottom: 0; left: 0; overflow: hidden; border-radius: 22rpx 22rpx 0 0; background: #fff; }
+.card-builder__option-picker-title { display: block; height: 76rpx; padding: 0 24rpx; border-bottom: 1rpx solid $border-light; color: $text-tertiary; font-size: 22rpx; line-height: 76rpx; }
+.card-builder__option-picker-item { display: flex; height: 86rpx; align-items: center; justify-content: space-between; padding: 0 24rpx; color: $text-primary; font-size: 26rpx; }
+.card-builder__option-picker-item.is-selected { background: #f2edff; color: $secondary; }
+.card-builder__option-picker-item.is-selected > text { color: $secondary; font-size: 32rpx; }
+.card-builder__birth-picker-panel { position: absolute; right: 24rpx; bottom: 370rpx; left: 24rpx; overflow: hidden; border-radius: 12rpx; background: #fff; box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.15); }
+.card-builder__birth-picker-title { display: block; height: 88rpx; padding: 0 40rpx; border-bottom: 1rpx solid $border-light; color: $text-primary; font-size: 25rpx; font-weight: 700; line-height: 88rpx; }
+.card-builder__birth-picker-columns { display: grid; grid-template-columns: 1fr 1fr; height: 390rpx; overflow: hidden; }
+.card-builder__birth-picker-column { position: relative; overflow-y: auto; }
+.card-builder__birth-picker-column + .card-builder__birth-picker-column { border-left: 1rpx solid $border-light; }
+.card-builder__birth-picker-columns text { display: block; height: 70rpx; color: $text-tertiary; font-size: 25rpx; line-height: 70rpx; text-align: center; }
+.card-builder__birth-picker-columns text.is-selected { background: #f1f1f1; color: $text-primary; }
+.card-builder__birth-picker-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 28rpx; padding: 34rpx 120rpx; border-top: 1rpx solid $border-light; }
+.card-builder__birth-picker-actions text { display: flex; height: 76rpx; align-items: center; justify-content: center; border-radius: 14rpx; background: #f1f1f1; color: $text-primary; font-size: 27rpx; font-weight: 700; }
+.card-builder__birth-picker-actions text:last-child { background: #0bc56a; color: #fff; }
