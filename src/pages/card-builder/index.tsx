@@ -14,7 +14,45 @@ import './index.scss'
 
 // 顺序与参考截图一致：先上传作品，再补求职信息，最后完善身型学历。
 const STEPS = ['上传录屏', '求职意向', '基本信息', '直播经验', '身型、学历']
-const CITIES = ['北京', '上海', '广州', '深圳', '杭州', '厦门', '成都', '重庆']
+type RegionGroup = { province: string; cities: string[] }
+
+const REGION_GROUPS: RegionGroup[] = [
+  { province: '全国', cities: [] },
+  { province: '北京市', cities: ['北京'] },
+  { province: '上海市', cities: ['上海'] },
+  { province: '广东省', cities: ['广州', '深圳', '东莞', '佛山', '珠海', '惠州', '中山', '汕头'] },
+  { province: '浙江省', cities: ['杭州', '宁波', '温州', '嘉兴', '绍兴', '金华', '台州'] },
+  { province: '江苏省', cities: ['南京', '苏州', '无锡', '常州', '南通', '徐州', '扬州'] },
+  { province: '福建省', cities: ['福州', '厦门', '泉州', '漳州', '莆田', '宁德'] },
+  { province: '四川省', cities: ['成都', '绵阳', '德阳', '乐山', '宜宾', '南充'] },
+  { province: '重庆市', cities: ['重庆'] },
+  { province: '湖北省', cities: ['武汉', '宜昌', '襄阳', '荆州', '黄石'] },
+  { province: '湖南省', cities: ['长沙', '株洲', '湘潭', '衡阳', '岳阳'] },
+  { province: '山东省', cities: ['济南', '青岛', '烟台', '潍坊', '临沂', '淄博'] },
+  { province: '河南省', cities: ['郑州', '洛阳', '开封', '新乡', '南阳'] },
+  { province: '河北省', cities: ['石家庄', '唐山', '保定', '秦皇岛', '廊坊'] },
+  { province: '山西省', cities: ['太原', '大同', '运城', '临汾'] },
+  { province: '辽宁省', cities: ['沈阳', '大连', '鞍山', '锦州'] },
+  { province: '吉林省', cities: ['长春', '吉林', '延边'] },
+  { province: '黑龙江省', cities: ['哈尔滨', '大庆', '齐齐哈尔', '牡丹江'] },
+  { province: '安徽省', cities: ['合肥', '芜湖', '蚌埠', '阜阳', '安庆'] },
+  { province: '江西省', cities: ['南昌', '九江', '赣州', '上饶'] },
+  { province: '广西壮族自治区', cities: ['南宁', '柳州', '桂林', '北海'] },
+  { province: '海南省', cities: ['海口', '三亚'] },
+  { province: '贵州省', cities: ['贵阳', '遵义', '六盘水'] },
+  { province: '云南省', cities: ['昆明', '大理', '丽江', '曲靖'] },
+  { province: '陕西省', cities: ['西安', '咸阳', '宝鸡', '渭南'] },
+  { province: '甘肃省', cities: ['兰州', '天水', '酒泉'] },
+  { province: '青海省', cities: ['西宁'] },
+  { province: '内蒙古自治区', cities: ['呼和浩特', '包头', '鄂尔多斯'] },
+  { province: '宁夏回族自治区', cities: ['银川'] },
+  { province: '新疆维吾尔自治区', cities: ['乌鲁木齐', '喀什'] },
+  { province: '西藏自治区', cities: ['拉萨'] },
+  { province: '香港特别行政区', cities: ['香港'] },
+  { province: '澳门特别行政区', cities: ['澳门'] },
+  { province: '台湾省', cities: ['台北', '高雄', '台中'] },
+]
+const HOT_CITIES = ['北京', '上海', '广州', '深圳', '杭州', '成都', '重庆', '厦门', '武汉', '西安', '郑州', '合肥']
 const CATEGORIES = ['服饰', '美妆', '数码', '食品酒饮', '珠宝', '家电', '日用家具', '户外运动', '母婴宠物', '奢品', '本地生活', '汽车', '其他']
 const EDUCATIONS = ['高中及以下', '大专', '本科', '本科及以上']
 
@@ -122,8 +160,22 @@ export default function CardBuilderPage() {
   }
 
   const toggleCity = (city: string) => {
-    const selected = draft.expectedCities || []
-    update('expectedCities', selected.includes(city) ? selected.filter((item) => item !== city) : [...selected, city])
+    setDraft((current) => {
+      const selected = current.expectedCities || []
+      if (city === '全国') {
+        const next = selected.includes('全国') ? [] : ['全国']
+        return { ...current, expectedCities: next, city: !current.city.trim() || selected.includes(current.city) ? (next[0] || '') : current.city }
+      }
+      const region = REGION_GROUPS.find((group) => group.province === city || group.cities.includes(city))
+      const province = region?.province
+      const withoutNationwide = selected.filter((item) => item !== '全国')
+      const isProvinceOption = province === city
+      const withoutSameRegion = province && isProvinceOption
+        ? withoutNationwide.filter((item) => item !== province && !region?.cities.includes(item))
+        : withoutNationwide.filter((item) => item !== province)
+      const next = selected.includes(city) ? withoutSameRegion : [...withoutSameRegion, city]
+      return { ...current, expectedCities: next, city: !current.city.trim() || selected.includes(current.city) ? (next[0] || '') : current.city }
+    })
   }
 
   const nextStep = () => {
@@ -207,7 +259,26 @@ function BodyStep({ draft, update, onEducation }: { draft: AnchorCard; update: <
 }
 
 function IntentStep({ draft, update, cityPickerVisible, onCityPicker, onCity, onCategory }: { draft: AnchorCard; update: <K extends keyof AnchorCard>(key: K, value: AnchorCard[K]) => void; cityPickerVisible: boolean; onCityPicker: () => void; onCity: (city: string) => void; onCategory: (category: string) => void }) {
-  return <View className="card-builder__content"><Text className="card-builder__eyebrow">第 2 步</Text><Text className="card-builder__title">求职意向</Text><Text className="card-builder__field-label">意向城市<Text>（必填）</Text></Text><View className="card-builder__city-select" onClick={onCityPicker}>{(draft.expectedCities || []).map((city) => <Text key={city} className="card-builder__tag is-city" onClick={(event) => { event.stopPropagation(); onCity(city) }}>{city} ×</Text>)}<Text className="card-builder__add">＋</Text></View>{cityPickerVisible && <View className="card-builder__city-options">{CITIES.map((city) => <Text key={city} className={(draft.expectedCities || []).includes(city) ? 'is-selected' : ''} onClick={() => onCity(city)}>{city}</Text>)}</View>}<Text className="card-builder__field-label">工作类型<Text>（必填）</Text></Text><View className="card-builder__radio-row card-builder__radio-row--three">{['全职', '兼职', '不限'].map((type) => <Text key={type} className={draft.workType === type ? 'is-selected' : ''} onClick={() => update('workType', type)}><Text className="card-builder__radio">{draft.workType === type ? '◉' : '○'}</Text>{type}</Text>)}</View><Field label="薪资要求（月薪，单位：元）" value={draft.monthlySalary || ''} placeholder="例如：8000 - 10000" onInput={(value) => update('monthlySalary', value)} /><Field label="薪资要求（时薪，单位：元）" value={draft.hourlySalary || ''} placeholder="例如：100 - 150" onInput={(value) => update('hourlySalary', value)} /><Text className="card-builder__field-label">是否接受坐班<Text>（建议填写）</Text></Text><View className="card-builder__radio-row"><Text className={draft.acceptShift ? 'is-selected' : ''} onClick={() => update('acceptShift', true)}><Text className="card-builder__radio">{draft.acceptShift ? '◉' : '○'}</Text>接受</Text><Text className={!draft.acceptShift ? 'is-selected' : ''} onClick={() => update('acceptShift', false)}><Text className={!draft.acceptShift ? 'card-builder__radio' : 'card-builder__radio'}>{!draft.acceptShift ? '◉' : '○'}</Text>不接受</Text></View><Text className="card-builder__field-label">意向品类<Text>（多选）</Text></Text><View className="card-builder__category-grid">{CATEGORIES.map((category) => <Text key={category} className={draft.categories.includes(category) ? 'is-selected' : ''} onClick={() => onCategory(category)}>{category}</Text>)}</View></View>
+  return <View className="card-builder__content"><Text className="card-builder__eyebrow">第 2 步</Text><Text className="card-builder__title">求职意向</Text><Text className="card-builder__field-label">意向城市<Text>（必填）</Text></Text><View className="card-builder__city-select" onClick={onCityPicker}>{(draft.expectedCities || []).map((city) => <Text key={city} className="card-builder__tag is-city" onClick={(event) => { event.stopPropagation(); onCity(city) }}>{city} ×</Text>)}<Text className="card-builder__add">＋</Text></View>{cityPickerVisible && <CityPicker currentCity={draft.city} selected={draft.expectedCities || []} onCity={onCity} onClose={onCityPicker} />}<Text className="card-builder__field-label">工作类型<Text>（必填）</Text></Text><View className="card-builder__radio-row card-builder__radio-row--three">{['全职', '兼职', '不限'].map((type) => <Text key={type} className={draft.workType === type ? 'is-selected' : ''} onClick={() => update('workType', type)}><Text className="card-builder__radio">{draft.workType === type ? '◉' : '○'}</Text>{type}</Text>)}</View><Field label="薪资要求（月薪，单位：元）" value={draft.monthlySalary || ''} placeholder="例如：8000 - 10000" onInput={(value) => update('monthlySalary', value)} /><Field label="薪资要求（时薪，单位：元）" value={draft.hourlySalary || ''} placeholder="例如：100 - 150" onInput={(value) => update('hourlySalary', value)} /><Text className="card-builder__field-label">是否接受坐班<Text>（建议填写）</Text></Text><View className="card-builder__radio-row"><Text className={draft.acceptShift ? 'is-selected' : ''} onClick={() => update('acceptShift', true)}><Text className="card-builder__radio">{draft.acceptShift ? '◉' : '○'}</Text>接受</Text><Text className={!draft.acceptShift ? 'is-selected' : ''} onClick={() => update('acceptShift', false)}><Text className={!draft.acceptShift ? 'card-builder__radio' : 'card-builder__radio'}>{!draft.acceptShift ? '◉' : '○'}</Text>不接受</Text></View><Text className="card-builder__field-label">意向品类<Text>（多选）</Text></Text><View className="card-builder__category-grid">{CATEGORIES.map((category) => <Text key={category} className={draft.categories.includes(category) ? 'is-selected' : ''} onClick={() => onCategory(category)}>{category}</Text>)}</View></View>
+}
+
+function CityPicker({ currentCity, selected, onCity, onClose }: { currentCity: string; selected: string[]; onCity: (city: string) => void; onClose: () => void }) {
+  const [keyword, setKeyword] = useState('')
+  const normalizedKeyword = keyword.trim()
+  const visibleGroups = normalizedKeyword
+    ? REGION_GROUPS.filter((group) => group.province.includes(normalizedKeyword) || group.cities.some((city) => city.includes(normalizedKeyword)))
+    : REGION_GROUPS
+
+  const toggle = (city: string) => onCity(city)
+
+  return <View className="card-builder__city-picker">
+    <View className="card-builder__city-picker-nav"><Text onClick={onClose}>‹</Text><Text>选择城市</Text><Text className="card-builder__city-picker-done" onClick={onClose}>完成</Text></View>
+    <View className="card-builder__city-picker-search"><Text>⌕</Text><Input value={keyword} placeholder="输入城市或省份名称" onInput={(event) => setKeyword(event.detail.value)} /></View>
+    <View className="card-builder__city-picker-current"><Text>当前城市</Text><Text className="card-builder__city-picker-current-value">{currentCity || '未设置'}</Text><Text className="card-builder__city-picker-selected-label">已添加</Text><View>{selected.length ? selected.map((city) => <Text key={city} className="card-builder__city-picker-tag" onClick={() => toggle(city)}>{city} ×</Text>) : <Text className="is-empty">请选择全国、省份或城市</Text>}</View></View>
+    {!normalizedKeyword && <><Text className="card-builder__city-picker-section-title">热门城市</Text><View className="card-builder__city-picker-hot">{HOT_CITIES.map((city) => <Text key={city} className={selected.includes(city) ? 'is-selected' : ''} onClick={() => toggle(city)}>{city}</Text>)}</View></>}
+    <Text className="card-builder__city-picker-section-title">按省份选择</Text>
+    <View className="card-builder__city-picker-list">{visibleGroups.map((group) => <View className="card-builder__city-picker-group" key={group.province}><View className="card-builder__city-picker-group-title"><Text>{group.province}</Text><Text className={selected.includes(group.province) ? 'is-selected' : ''} onClick={() => toggle(group.province)}>{group.province === '全国' ? '全国' : '全省'}</Text></View><View className="card-builder__city-picker-cities">{group.cities.filter((city) => !normalizedKeyword || city.includes(normalizedKeyword) || group.province.includes(normalizedKeyword)).map((city) => <Text key={city} className={selected.includes(city) ? 'is-selected' : ''} onClick={() => toggle(city)}>{city}</Text>)}</View></View>)}</View>
+  </View>
 }
 
 function ExperienceStep({ draft, update }: { draft: AnchorCard; update: <K extends keyof AnchorCard>(key: K, value: AnchorCard[K]) => void }) {
