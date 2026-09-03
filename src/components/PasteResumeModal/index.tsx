@@ -30,6 +30,7 @@ interface PasteResumeModalProps {
   description?: string
   placeholder?: string
   submitLabel?: string
+  showCounter?: boolean
 }
 
 /** 粘贴文本的最小长度：过短无法解析出有效信息，前端先做兜底校验 */
@@ -49,6 +50,7 @@ export default function PasteResumeModal({
   description = '把你的自我介绍粘贴到下方，AI 会自动帮你整理成简历，商家看到更快联系你',
   placeholder = '例：小雅，25岁，杭州，3年女装带货经验，日常直播4小时，期望底薪+提成…',
   submitLabel = 'AI 智能生成简历',
+  showCounter = true,
 }: PasteResumeModalProps) {
   // 输入文本为组件内部态：弹窗关闭后清空，避免下次打开残留上次内容
   const [text, setText] = useState('')
@@ -90,9 +92,6 @@ export default function PasteResumeModal({
       <View className="paste-modal__panel">
         <View className="paste-modal__header">
           <Text className="paste-modal__title">{title}</Text>
-          <Text className="paste-modal__close" onClick={handleClose}>
-            ✕
-          </Text>
         </View>
 
         <Text className="paste-modal__desc">
@@ -108,8 +107,7 @@ export default function PasteResumeModal({
           autoHeight={false}
         />
 
-        {/* 字数计数：让用户对 500 字上限有感知 */}
-        <Text className="paste-modal__counter">{text.length}/500</Text>
+        {showCounter && <Text className="paste-modal__counter">{text.length}/500</Text>}
 
         <View
           className={`paste-modal__submit ${canSubmit ? '' : 'is-disabled'}`}

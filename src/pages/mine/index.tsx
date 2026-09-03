@@ -385,12 +385,12 @@ export default function MinePage() {
           <View className="mine-page__create-panel">
             <Text className="mine-page__create-title">选择创建方式</Text>
             <View className="mine-page__create-option" onClick={chooseRecording}><Text className="mine-page__create-icon">＋</Text><View><Text>上传作品，逐步制作</Text><Text>先添加一段直播录屏，再补齐模卡资料</Text></View><Text>›</Text></View>
-            <View className="mine-page__create-option" onClick={() => { setCreateSheetVisible(false); setImportCardVisible(true) }}><Text className="mine-page__create-icon is-import">↓</Text><View><Text>带入已有资料</Text><Text>从旧资料中提取内容，快速补齐模卡</Text></View><Text>›</Text></View>
+            <View className="mine-page__create-option" onClick={() => { setCreateSheetVisible(false); setImportCardVisible(true) }}><Text className="mine-page__create-icon is-ai">AI</Text><View><Text>粘贴资料，AI 智能生成</Text><Text>把已有资料粘进来，AI 帮你做好再核对</Text></View><Text>›</Text></View>
           </View>
         </View>
       )}
 
-      <PasteResumeModal visible={importCardVisible} onClose={() => setImportCardVisible(false)} onSubmit={importCardData} title="带入模卡资料" description="可粘贴已有的主播介绍或资料；内容只用于预填模卡，保存前仍可逐项修改。" placeholder="例：我叫小怡，23岁，杭州，直播2年，播过美妆和女装，最高单场GMV 30万…" submitLabel="带入模卡" />
+      <PasteResumeModal visible={importCardVisible} onClose={() => setImportCardVisible(false)} onSubmit={importCardData} title="粘贴你的资料" description="从聊天记录、简历随便粘，AI 自动拆成模卡字段，之后可逐项核对修改" placeholder="例：我叫小怡，22岁，杭州，直播1年，播过服饰个护，期望全职8-15K…" submitLabel="开始生成" showCounter={false} />
     </View>
   )
 }
