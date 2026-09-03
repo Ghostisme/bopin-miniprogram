@@ -25,6 +25,11 @@ interface PasteResumeModalProps {
    * 组件已保证传出的文本非空且已 trim。
    */
   onSubmit: (rawText: string) => void
+  /** 按使用场景定制文案，默认保持简历生成入口。 */
+  title?: string
+  description?: string
+  placeholder?: string
+  submitLabel?: string
 }
 
 /** 粘贴文本的最小长度：过短无法解析出有效信息，前端先做兜底校验 */
@@ -40,6 +45,10 @@ export default function PasteResumeModal({
   visible,
   onClose,
   onSubmit,
+  title = '粘贴你的资料',
+  description = '把你的自我介绍粘贴到下方，AI 会自动帮你整理成简历，商家看到更快联系你',
+  placeholder = '例：小雅，25岁，杭州，3年女装带货经验，日常直播4小时，期望底薪+提成…',
+  submitLabel = 'AI 智能生成简历',
 }: PasteResumeModalProps) {
   // 输入文本为组件内部态：弹窗关闭后清空，避免下次打开残留上次内容
   const [text, setText] = useState('')
@@ -80,21 +89,21 @@ export default function PasteResumeModal({
       {/* 底部面板 */}
       <View className="paste-modal__panel">
         <View className="paste-modal__header">
-          <Text className="paste-modal__title">粘贴你的资料</Text>
+          <Text className="paste-modal__title">{title}</Text>
           <Text className="paste-modal__close" onClick={handleClose}>
             ✕
           </Text>
         </View>
 
         <Text className="paste-modal__desc">
-          把你的自我介绍粘贴到下方，AI 会自动帮你整理成简历，商家看到更快联系你
+          {description}
         </Text>
 
         <Textarea
           className="paste-modal__textarea"
           value={text}
           onInput={handleInput}
-          placeholder="例：小雅，25岁，杭州，3年女装带货经验，日常直播4小时，期望底薪+提成…"
+          placeholder={placeholder}
           maxlength={500}
           autoHeight={false}
         />
@@ -106,7 +115,7 @@ export default function PasteResumeModal({
           className={`paste-modal__submit ${canSubmit ? '' : 'is-disabled'}`}
           onClick={handleSubmit}
         >
-          <Text>AI 智能生成简历</Text>
+          <Text>{submitLabel}</Text>
         </View>
       </View>
     </View>

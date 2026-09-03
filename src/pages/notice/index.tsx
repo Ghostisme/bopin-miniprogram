@@ -2,24 +2,27 @@
  * 通告列表页（首页 · 通告 tab）
  *
  * 应用主入口页，对应截图首屏：顶部搜索栏 + 筛选/排序栏，中部通告卡片流，
- * 右下角悬浮「粘贴你的资料」入口（AI 简历）。
+ * 新主播未创建模卡时，会在首条通告后展示模卡创建引导。
  *
  * 数据流：本页作为 filter 状态的单一持有者，FilterBar/SearchBar 只上报增量变化，
  * 由本页合并后统一触发 fetchNotices。这样筛选来源唯一，避免多组件各自请求导致竞态。
  */
 
 import { useState, useCallback } from 'react'
-import { Text, View } from '@tarojs/components'
+import { Image, Text, View } from '@tarojs/components'
 import Taro, { useDidShow, usePullDownRefresh } from '@tarojs/taro'
 import type { Notice, NoticeFilter } from '@/types'
-import { fetchNotices, updateResume } from '@/services'
+import { fetchNotices, fetchUserProfile } from '@/services'
 import { getStorage, setActiveRole, setStorage, STORAGE_KEYS, tokenKeyForRole } from '@/utils/storage'
 import SearchBar from '@/components/SearchBar'
 import FilterBar from '@/components/FilterBar'
 import NoticeCard from '@/components/NoticeCard'
 import EmptyState from '@/components/EmptyState'
-import PasteResumeModal from '@/components/PasteResumeModal'
 import './index.scss'
+
+import cardCover from '@/assets/card/cover.jpg'
+import cardClipOne from '@/assets/card/clip-1.jpg'
+import cardClipTwo from '@/assets/card/clip-2.jpg'
 
 /**
  * 列表页组件。
@@ -34,8 +37,7 @@ export default function NoticePage() {
   }))
   const [list, setList] = useState<Notice[]>([])
   const [loading, setLoading] = useState(false)
-  // 粘贴资料弹窗可见性
-  const [pasteVisible, setPasteVisible] = useState(false)
+  const [showCardGuide, setShowCardGuide] = useState(false)
 
   const goEmployerCenter = () => {
     setActiveRole('merchant')
@@ -52,6 +54,11 @@ export default function NoticePage() {
     else Taro.navigateTo({ url: '/pages/role-login/index?role=merchant' })
   }
 
+  const goCreateCard = () => {
+    setActiveRole('anchor')
+    Taro.switchTab({ url: '/pages/mine/index' })
+  }
+
   const applyQuickFilter = (patch: Partial<NoticeFilter>) => {
     handleFilterChange(patch)
   }
@@ -65,13 +72,33 @@ export default function NoticePage() {
     try {
       const data = await fetchNotices(nextFilter)
       setList(data)
+    } catch {
+      // 请求层已经提示错误；保留当前列表，避免未处理的 Promise 触发整页错误。
     } finally {
       setLoading(false)
     }
   }, [])
 
-  // 每次页面显示时用当前筛选刷新列表
-  useDidShow(() => { loadList(filter) })
+  const loadCardGuide = useCallback(async () => {
+    if (!getStorage<string | undefined>(tokenKeyForRole('anchor'), undefined)) {
+      setShowCardGuide(false)
+      return
+    }
+    try {
+      const profile = await fetchUserProfile()
+      setStorage(STORAGE_KEYS.USER_PROFILE, profile)
+      setShowCardGuide(!profile.cardCompleted && !profile.anchorCard && !(profile.anchorCards?.length))
+    } catch {
+      setShowCardGuide(false)
+    }
+  }, [])
+
+  // 通告页是主播端主页：每次显示都刷新机会和主播自己的模卡状态。
+  useDidShow(() => {
+    setActiveRole('anchor')
+    void loadList(filter)
+    void loadCardGuide()
+  })
 
   // 下拉刷新：重新拉取并结束原生刷新态
   usePullDownRefresh(async () => {
@@ -108,27 +135,6 @@ export default function NoticePage() {
   /** 点击卡片跳详情，透传 id */
   const goDetail = (id: string) => {
     Taro.navigateTo({ url: `/subpages/detail/notice-detail/index?id=${id}` })
-  }
-
-  /**
-   * 提交粘贴的简历文本。
-   * 将粘贴资料交给资料服务保存；当前本地适配器先保留原文，同时落库用户城市和简介。
-   */
-  const handleResumeSubmit = async (rawText: string) => {
-    setActiveRole('anchor')
-    if (!getStorage<string | undefined>(tokenKeyForRole('anchor'), undefined)) {
-      setPasteVisible(false)
-      Taro.navigateTo({ url: '/pages/role-login/index?role=anchor' })
-      return
-    }
-    await updateResume({
-      nickname: '',
-      categories: [],
-      city: filter.city ?? '',
-      intro: rawText,
-    })
-    setPasteVisible(false)
-    Taro.showToast({ title: '简历已生成', icon: 'success' })
   }
 
   return (
@@ -174,9 +180,9 @@ export default function NoticePage() {
           <Text className="notice-page__quick-icon quick-icon--nearby">近</Text>
           <Text className="notice-page__quick-label">附近机会</Text>
         </View>
-        <View className="notice-page__quick" onClick={() => setPasteVisible(true)}>
-          <Text className="notice-page__quick-icon quick-icon--ai">AI</Text>
-          <Text className="notice-page__quick-label">生成简历</Text>
+        <View className="notice-page__quick" onClick={goCreateCard}>
+          <Text className="notice-page__quick-icon quick-icon--card">卡</Text>
+          <Text className="notice-page__quick-label">创建模卡</Text>
         </View>
         <View className="notice-page__quick" onClick={goCreateNotice}>
           <Text className="notice-page__quick-icon quick-icon--publish">发</Text>
@@ -204,21 +210,30 @@ export default function NoticePage() {
           </View>
           <Text className="notice-page__list-count">{list.length} 个机会</Text>
         </View>
-        {list.length === 0 && !loading ? (
-          <EmptyState text="暂无符合条件的通告，换个筛选试试" />
-        ) : (
-          list.map((notice) => (
-            <NoticeCard key={notice.id} notice={notice} onClick={goDetail} />
-          ))
-        )}
+        {list.length === 0 && !loading ? <EmptyState text="暂无符合条件的通告，换个筛选试试" /> : list.map((notice, index) => (
+          <View className="notice-page__notice-item" key={notice.id}>
+            <NoticeCard notice={notice} onClick={goDetail} />
+            {index === 0 && showCardGuide && <ModelCardGuide onCreate={goCreateCard} onClose={() => setShowCardGuide(false)} />}
+          </View>
+        ))}
+        {list.length === 0 && showCardGuide && <ModelCardGuide onCreate={goCreateCard} onClose={() => setShowCardGuide(false)} />}
       </View>
+    </View>
+  )
+}
 
-      {/* 粘贴资料弹窗 */}
-      <PasteResumeModal
-        visible={pasteVisible}
-        onClose={() => setPasteVisible(false)}
-        onSubmit={handleResumeSubmit}
-      />
+function ModelCardGuide({ onCreate, onClose }: { onCreate: () => void; onClose: () => void }) {
+  return (
+    <View className="notice-page__card-guide" onClick={onCreate}>
+      <Text className="notice-page__card-guide-close" onClick={(event) => { event.stopPropagation(); onClose() }}>×</Text>
+      <View className="notice-page__card-guide-art" aria-hidden>
+        <View className="notice-page__card-guide-image is-left"><Image src={cardClipOne} mode="aspectFill" /></View>
+        <View className="notice-page__card-guide-image is-center"><Image src={cardCover} mode="aspectFill" /></View>
+        <View className="notice-page__card-guide-image is-right"><Image src={cardClipTwo} mode="aspectFill" /></View>
+      </View>
+      <Text className="notice-page__card-guide-title">制作一张好模卡，让企业先看见你</Text>
+      <Text className="notice-page__card-guide-text">上传直播作品和经验，建立可被企业查看的主播模卡。</Text>
+      <View className="notice-page__card-guide-button">去创建模卡</View>
     </View>
   )
 }

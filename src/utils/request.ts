@@ -16,13 +16,16 @@ export const USE_MOCK = false
 /**
  * 后端基础地址。
  *
- * H5 本地预览默认连接 Spring Boot；微信真机发布时通过
+ * H5 本地预览默认走同源开发代理；微信真机发布时通过
  * TARO_APP_API_BASE_URL 替换为已备案 HTTPS 域名即可。
  */
 const RUNTIME_API_BASE_URL = typeof process !== 'undefined' && process.env
   ? process.env.TARO_APP_API_BASE_URL
   : undefined
-const BASE_URL = RUNTIME_API_BASE_URL || 'http://localhost:8080/api/v1'
+const DEFAULT_API_BASE_URL = process.env.TARO_ENV === 'h5'
+  ? '/api/v1'
+  : 'http://localhost:8080/api/v1'
+export const API_BASE_URL = RUNTIME_API_BASE_URL || DEFAULT_API_BASE_URL
 
 /** 请求超时时间（ms） */
 const TIMEOUT = 10000
@@ -64,27 +67,35 @@ export async function request<T>(options: RequestOptions): Promise<T> {
     if (token) header.Authorization = `Bearer ${token}`
   }
 
+  let res: Taro.request.SuccessCallbackResult<unknown>
   try {
-    const res = await Taro.request({
-      url: `${BASE_URL}${url}`,
+    res = await Taro.request({
+      url: `${API_BASE_URL}${url}`,
       method,
       data: requestData,
       header,
       timeout: TIMEOUT,
     })
-
-    const body = res.data as ApiResponse<T>
-    // 业务错误：HTTP 200 但 code 非 0，视为失败并提示
-    if (body.code !== 0) {
-      Taro.showToast({ title: body.message || '请求失败', icon: 'none' })
-      return Promise.reject(body)
-    }
-    return body.data
   } catch (err) {
-    // 网络层错误（超时、断网等），统一兜底提示
     Taro.showToast({ title: '网络异常，请稍后重试', icon: 'none' })
-    return Promise.reject(err)
+    throw err
   }
+
+  const body = res.data as ApiResponse<T> | null | undefined
+  if (!body || typeof body !== 'object' || typeof body.code !== 'number') {
+    const message = res.statusCode >= 400
+      ? `服务响应异常（${res.statusCode}）`
+      : '服务响应异常，请稍后重试'
+    Taro.showToast({ title: message, icon: 'none' })
+    throw new Error(message)
+  }
+
+  // 业务错误：HTTP 200 但 code 非 0，视为失败并提示
+  if (body.code !== 0) {
+    Taro.showToast({ title: body.message || '请求失败', icon: 'none' })
+    throw new Error(body.message || '请求失败')
+  }
+  return body.data
 }
 
 /**

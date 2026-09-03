@@ -52,6 +52,20 @@ export default defineConfig(async (merge, { command, mode }) => {
     h5: {
       publicPath: '/',
       staticDirectory: 'static',
+      // 所有 H5 开发预览均通过同源路径访问接口，避免浏览器阻止
+      // 局域网页面直接请求 localhost 的私有网络地址。
+      devServer: {
+        proxy: {
+          '/api/v1': {
+            target: 'http://localhost:8080',
+            changeOrigin: true,
+          },
+          '/uploads': {
+            target: 'http://localhost:8080',
+            changeOrigin: true,
+          },
+        },
+      },
       postcss: {
         autoprefixer: {
           enable: true,
