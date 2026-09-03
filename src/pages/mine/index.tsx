@@ -184,6 +184,17 @@ export default function MinePage() {
     else Taro.navigateTo({ url: '/pages/role-login/index?role=merchant' })
   }
 
+  const copyCardInfo = async () => {
+    if (!previewCard) return
+    await Taro.setClipboardData({
+      data: `${previewCard.stageName}\n${previewCard.categories.join('、')}\n${previewCard.city}\n${previewCard.expectedSalary || '薪资面议'}`,
+    })
+    Taro.showToast({ title: '资料已复制', icon: 'success' })
+  }
+
+  const shareCard = () => Taro.showToast({ title: '模卡分享已生成', icon: 'success' })
+  const downloadCard = () => Taro.showToast({ title: '模卡资料已整理', icon: 'success' })
+
   const updateCard = (key: keyof AnchorCard, value: string | number | string[]) => {
     setCardDraft((current) => ({ ...current, [key]: value }))
   }
@@ -253,8 +264,6 @@ export default function MinePage() {
     <View className="mine-page">
       <View className="mine-page__topbar">
         <Text className="mine-page__role-chip" onClick={switchToMerchant}>切换为企业身份</Text>
-        <Text className="mine-page__topbar-title">我的模卡</Text>
-        <Text className="mine-page__topbar-action">客服</Text>
       </View>
 
       <View className="mine-page__profile-strip">
@@ -262,13 +271,15 @@ export default function MinePage() {
           {user.avatar ? <Image src={user.avatar} className="mine-page__avatar-img" /> : <Text className="mine-page__avatar-text">{user.nickname[0]}</Text>}
         </View>
         <View className="mine-page__info">
-          <Text className="mine-page__nickname">{user.nickname}</Text>
-          <Text className="mine-page__phone">ID：{user.id}</Text>
-          <View className="mine-page__profile-actions"><Text>编辑资料</Text><Text>{user.verified ? '已实名' : '待实名'}</Text></View>
+          <View className="mine-page__nickname-row"><Text className="mine-page__nickname">{user.nickname}</Text><Text className="mine-page__profile-edit" onClick={() => Taro.showToast({ title: '资料编辑即将开放', icon: 'none' })}>编辑</Text></View>
+          <View className="mine-page__id-row"><Text className="mine-page__phone">ID：{user.id}</Text><Text className="mine-page__profile-copy" onClick={async () => { await Taro.setClipboardData({ data: user.id }); Taro.showToast({ title: 'ID 已复制', icon: 'success' }) }}>复制</Text></View>
         </View>
+        <View className="mine-page__customer-service" onClick={() => Taro.showToast({ title: '客服将在 1 分钟内联系你', icon: 'none' })}><Text>◉</Text><Text>客服</Text></View>
       </View>
 
-      <View className="mine-page__card-section">
+      {hasCards && !editingCard && <View className="mine-page__agency-banner"><Text className="mine-page__agency-title">招募播络代理，解锁 <Text>播络伙伴</Text></Text><Text className="mine-page__agency-description">提供潜客线索，无需操心售后，50%分成</Text><View className="mine-page__agency-button" onClick={() => Taro.showToast({ title: '代理计划即将开放', icon: 'none' })}>查看代理计划</View></View>}
+
+      <View className={`mine-page__card-section ${hasCards && !editingCard ? 'is-complete' : ''}`}>
         <View className="mine-page__section-header">
           <View className="mine-page__card-heading"><Text className="mine-page__section-title">我的模卡</Text><Text className={`mine-page__required-badge ${hasCards ? 'is-complete' : ''}`}>{hasCards ? `${cards.length} 张` : '必填'}</Text></View>
           {hasCards && !editingCard && <Text className="mine-page__link" onClick={openCreateSheet}>新建</Text>}
@@ -278,35 +289,18 @@ export default function MinePage() {
           <View className={`mine-page__showcase ${hasCards ? 'is-complete' : ''}`}>
             {hasCards && previewCard ? (
               <>
-                <View className="mine-page__showcase-cover">
-                  <Image src={previewCard.coverImage || DEFAULT_CARD_MEDIA.coverImage} mode="aspectFill" />
-                  <View className="mine-page__showcase-cover-shade" />
-                  <Text>企业主展示</Text>
-                  <View><Text>{previewCard.stageName}</Text><Text>{previewCard.advantage || previewCard.intro}</Text></View>
+                <View className="mine-page__complete-heading"><Text className="mine-page__section-title">我的模卡</Text><View className="mine-page__complete-heading-actions"><Text className="mine-page__detail-link" onClick={() => openCardEditor(previewCard)}>查看详情›</Text><Text className="mine-page__new-link" onClick={openCreateSheet}>新建</Text></View></View>
+                <View className="mine-page__compact-card">
+                  <Image className="mine-page__compact-card-cover" src={previewCard.coverImage || DEFAULT_CARD_MEDIA.coverImage} mode="aspectFill" />
+                  <View className="mine-page__compact-card-info">
+                    <Text className="mine-page__compact-card-name">{previewCard.stageName || user.nickname}</Text>
+                    <Text className="mine-page__compact-card-meta">{previewCard.experienceYears ? `${previewCard.experienceYears} 年` : '1 年以下'}·{previewCard.age || 23}岁·{previewCard.height || '166cm'}·{previewCard.weight || '47kg'}·{previewCard.gender || '女'}</Text>
+                    <Text className="mine-page__compact-card-account">播过 {previewCard.accountName || previewCard.experienceCategory || previewCard.categories.join('、') || '直播账号'}</Text>
+                    <View className="mine-page__compact-card-salary"><Text>{previewCard.expectedSalary || previewCard.monthlySalary || '8-10K/月'}</Text><Text>{previewCard.hourlySalary || '100-150元/小时'}</Text></View>
+                  </View>
                 </View>
-                <View className="mine-page__showcase-summary">
-                  <View><Text>直播作品</Text><Text>{previewCard.recordingUrl ? '已上传录屏' : '待补充录屏'}</Text></View>
-                  <View><Text>意向品类</Text><Text>{previewCard.categories.join(' / ') || '待完善'}</Text></View>
-                  <View><Text>最高单场</Text><Text>{previewCard.peakGmv || '待填写'}</Text></View>
-                </View>
-                <View className="mine-page__showcase-button" onClick={() => openCardEditor(previewCard)}>查看并编辑主模卡</View>
-                <View className="mine-page__card-list-header"><Text>已创建 {cards.length}/5 张模卡</Text><Text onClick={openCreateSheet}>+ 新建一张</Text></View>
-                <View className="mine-page__card-list">
-                  {cards.map((card, index) => (
-                    <View className={`mine-page__card-list-item ${card.isPrimary ? 'is-primary' : ''}`} key={card.id || `${card.stageName}-${index}`}>
-                      <Image className="mine-page__card-list-cover" src={card.coverImage || DEFAULT_CARD_MEDIA.coverImage} mode="aspectFill" />
-                      <View className="mine-page__card-list-info">
-                        <View><Text>{card.stageName || '未命名模卡'}</Text>{card.isPrimary && <Text>企业展示中</Text>}</View>
-                        <Text>{card.categories.join(' / ') || '待补充品类'} · {card.city || '待补充城市'}</Text>
-                      </View>
-                      <View className="mine-page__card-list-actions">
-                        {card.isPrimary ? <Text className="is-current">当前展示</Text> : <Text onClick={() => makePrimary(card)}>设为主展示</Text>}
-                        <Text onClick={() => openCardEditor(card)}>编辑</Text>
-                        <Text className="is-delete" onClick={() => removeCard(card)}>删除</Text>
-                      </View>
-                    </View>
-                  ))}
-                </View>
+                <View className="mine-page__compact-actions"><Text onClick={copyCardInfo}>复制资料</Text><Text onClick={downloadCard}>下载简历</Text><Text onClick={shareCard}>分享模卡</Text></View>
+                {cards.length > 1 && <><View className="mine-page__card-list-header"><Text>其他模卡 {cards.length - 1} 张</Text><Text onClick={openCreateSheet}>+ 新建一张</Text></View><View className="mine-page__card-list">{cards.filter((card) => !card.isPrimary).map((card, index) => <View className="mine-page__card-list-item" key={card.id || `${card.stageName}-${index}`}><Image className="mine-page__card-list-cover" src={card.coverImage || DEFAULT_CARD_MEDIA.coverImage} mode="aspectFill" /><View className="mine-page__card-list-info"><View><Text>{card.stageName || '未命名模卡'}</Text></View><Text>{card.categories.join(' / ') || '待补充品类'} · {card.city || '待补充城市'}</Text></View><View className="mine-page__card-list-actions"><Text onClick={() => makePrimary(card)}>设为主展示</Text><Text onClick={() => openCardEditor(card)}>编辑</Text><Text className="is-delete" onClick={() => removeCard(card)}>删除</Text></View></View>)}</View></>}
               </>
             ) : (
               <>

@@ -817,3 +817,52 @@
 
   &__create-icon.is-import { background: #fff3f6; color: $secondary; font-size: 31rpx; }
 }
+
+// 已完成模卡的成品态：紧凑资料卡、代理横幅和资料操作与参考图保持同一层级。
+.mine-page {
+  &__profile-strip { padding: 24rpx 28rpx 20rpx; }
+  &__avatar { width: 88rpx; height: 88rpx; margin-right: 20rpx; border-width: 2rpx; }
+  &__avatar-text { font-size: 34rpx; }
+  &__nickname-row,
+  &__id-row { display: flex; align-items: center; }
+  &__nickname-row { gap: 12rpx; }
+  &__nickname { margin-bottom: 0; font-size: 32rpx; font-weight: 800; }
+  &__phone { margin-bottom: 0; color: $text-tertiary; font-size: 22rpx; }
+  &__profile-edit,
+  &__profile-copy { color: $secondary; font-size: 22rpx; }
+  &__id-row { gap: 16rpx; margin-top: 7rpx; }
+  &__customer-service { display: flex; width: 60rpx; height: 60rpx; flex-direction: column; align-items: center; justify-content: center; margin-left: auto; border-radius: 50%; background: $primary-pale; color: $secondary; font-size: 19rpx; }
+  &__customer-service text:first-child { font-size: 27rpx; line-height: 1; }
+
+  &__agency-banner { margin: 14rpx 12rpx 12rpx; padding: 28rpx 22rpx 24rpx; border-radius: 12rpx; background: #fff7ff; text-align: center; }
+  &__agency-title { display: block; color: $text-primary; font-size: 30rpx; font-weight: 800; }
+  &__agency-title text { color: $secondary; font-size: 36rpx; }
+  &__agency-description { display: block; margin-top: 10rpx; color: $text-tertiary; font-size: 22rpx; }
+  &__agency-button { display: flex; width: 220rpx; height: 66rpx; align-items: center; justify-content: center; margin: 20rpx auto 0; border-radius: 999rpx; background: $primary-pale; color: $secondary; font-size: 22rpx; }
+
+  &__card-section.is-complete { margin: 0 12rpx 12rpx; padding: 24rpx 0 0; overflow: hidden; border: 0; border-radius: 12rpx; background: #fff; box-shadow: none; }
+  &__card-section.is-complete > .mine-page__section-header { display: none; }
+  &__showcase.is-complete { padding: 0; border: 0; border-radius: 0; background: transparent; }
+  &__complete-heading { display: flex; align-items: center; justify-content: space-between; padding: 0 24rpx 20rpx; }
+  &__complete-heading .mine-page__section-title { font-size: 30rpx; font-weight: 800; }
+  &__complete-heading-actions { display: flex; align-items: center; gap: 18rpx; }
+  &__detail-link { color: $secondary; font-size: 22rpx; }
+  &__new-link { color: $secondary; font-size: 22rpx; }
+  &__compact-card { display: flex; min-height: 180rpx; padding: 0 24rpx 18rpx; }
+  &__compact-card-cover { width: 136rpx; height: 180rpx; flex: 0 0 auto; border-radius: 8rpx; background: #f2ebed; }
+  &__compact-card-info { min-width: 0; padding: 4rpx 0 0 20rpx; }
+  &__compact-card-name { display: block; color: $text-primary; font-size: 31rpx; font-weight: 800; }
+  &__compact-card-meta,
+  &__compact-card-account { display: block; margin-top: 10rpx; overflow: hidden; color: $text-secondary; font-size: 22rpx; text-overflow: ellipsis; white-space: nowrap; }
+  &__compact-card-salary { display: flex; flex-wrap: wrap; gap: 10rpx; margin-top: 14rpx; color: $secondary; font-size: 30rpx; font-weight: 800; }
+  &__compact-card-salary text + text { font-size: 24rpx; }
+  &__compact-actions { display: grid; grid-template-columns: repeat(3, 1fr); min-height: 72rpx; background: $primary-pale; }
+  &__compact-actions text { display: flex; align-items: center; justify-content: center; border-right: 1rpx solid rgba(195, 92, 128, 0.14); color: $secondary; font-size: 22rpx; }
+  &__compact-actions text:last-child { border-right: 0; background: $primary; color: #fff; }
+  &__card-section.is-complete .mine-page__card-list-header { margin: 22rpx 24rpx 0; }
+  &__card-section.is-complete .mine-page__card-list { padding: 0 24rpx 22rpx; }
+
+  &__menu { margin: 0 12rpx 12rpx; border-radius: 12rpx; box-shadow: none; }
+  &__menu-item { min-height: 86rpx; box-sizing: border-box; padding: 0 24rpx; }
+  &__menu-text { color: $text-secondary; font-size: 24rpx; }
+}
