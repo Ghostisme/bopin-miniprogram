@@ -3,7 +3,7 @@ import { Image, Text, Video, View } from '@tarojs/components'
 import Taro, { useLoad } from '@tarojs/taro'
 import type { ReactNode } from 'react'
 import type { AnchorCard } from '@/types'
-import { fetchUserProfile } from '@/services'
+import { deleteAnchorCard, fetchUserProfile, setPrimaryAnchorCard } from '@/services'
 import { getStorage, setActiveRole, tokenKeyForRole } from '@/utils/storage'
 import EmptyState from '@/components/EmptyState'
 import cardCover from '@/assets/card/cover.jpg'
@@ -20,6 +20,7 @@ export default function CardDetailPage() {
   const [loading, setLoading] = useState(true)
   const [playing, setPlaying] = useState(false)
   const [manageVisible, setManageVisible] = useState(false)
+  const [actionLoading, setActionLoading] = useState(false)
 
   useLoad(async ({ id }) => {
     setActiveRole('anchor')
@@ -47,10 +48,51 @@ export default function CardDetailPage() {
   const heroVideo = card.recordingUrl && !IMAGE_SOURCE.test(card.recordingUrl) ? card.recordingUrl : ''
   const title = card.stageName || '未命名模卡'
 
-  const handleManageAction = (action: string) => {
+  const handleManageAction = async (action: string) => {
     setManageVisible(false)
     if (action === '取消') return
     if (action === '管理模卡') return
+    if (action === '编辑切片' || action === '编辑资料') {
+      if (!card.id) return
+      const step = action === '编辑切片' ? 0 : 1
+      Taro.navigateTo({ url: `/pages/card-builder/index?id=${encodeURIComponent(card.id)}&step=${step}` })
+      return
+    }
+    if (action === '设为主展示') {
+      if (!card.id || card.isPrimary || actionLoading) return
+      setActionLoading(true)
+      try {
+        await setPrimaryAnchorCard(card.id)
+        setCard((current) => current ? { ...current, isPrimary: true } : current)
+        Taro.showToast({ title: '已设为主展示', icon: 'success' })
+      } catch {
+        // request 层负责展示服务端返回的错误。
+      } finally {
+        setActionLoading(false)
+      }
+      return
+    }
+    if (action === '删除模卡') {
+      if (!card.id || actionLoading) return
+      const result = await Taro.showModal({
+        title: '删除这张模卡？',
+        content: card.isPrimary ? '删除后会自动选择另一张模卡对企业展示。' : '删除后不可恢复，已投递或沟通记录不会受影响。',
+        confirmText: '删除',
+        confirmColor: '#e799b0',
+      })
+      if (!result.confirm) return
+      setActionLoading(true)
+      try {
+        await deleteAnchorCard(card.id)
+        Taro.showToast({ title: '模卡已删除', icon: 'success' })
+        setTimeout(() => Taro.navigateBack(), 350)
+      } catch {
+        // request 层负责展示服务端返回的错误。
+      } finally {
+        setActionLoading(false)
+      }
+      return
+    }
     Taro.showToast({ title: `${action}功能即将开放`, icon: 'none' })
   }
 
@@ -82,7 +124,7 @@ export default function CardDetailPage() {
 
       <View className="card-detail__actions"><Text onClick={() => Taro.showToast({ title: '资料已复制', icon: 'success' })}><Text className="card-detail__action-icon">▣</Text>资料</Text><Text onClick={() => Taro.showToast({ title: '简历已整理', icon: 'success' })}><Text className="card-detail__action-icon">⇩</Text>简历</Text><Text onClick={() => Taro.showToast({ title: '分享卡片已生成', icon: 'success' })}><Text className="card-detail__action-icon">⌯</Text>分享</Text><Text className="card-detail__manage" onClick={() => setManageVisible(true)}>管理</Text><Text className="card-detail__style" onClick={() => Taro.showToast({ title: '风格切换即将开放', icon: 'none' })}>切换风格</Text></View>
 
-      {manageVisible && <View className="card-detail__manage-sheet"><View className="card-detail__manage-mask" onClick={() => setManageVisible(false)} /><View className="card-detail__manage-panel">{['管理模卡', '编辑切片', '编辑资料', '关闭推荐给企业'].map((action) => <Text key={action} onClick={() => handleManageAction(action)}>{action}</Text>)}<View className="card-detail__manage-divider" /><Text onClick={() => handleManageAction('取消')}>取消</Text></View></View>}
+      {manageVisible && <View className="card-detail__manage-sheet"><View className="card-detail__manage-mask" onClick={() => setManageVisible(false)} /><View className="card-detail__manage-panel">{['管理模卡', '编辑切片', '编辑资料', ...(!card.isPrimary ? ['设为主展示'] : []), '删除模卡', '关闭推荐给企业'].map((action) => <Text key={action} className={action === '删除模卡' ? 'is-danger' : ''} onClick={() => void handleManageAction(action)}>{action}</Text>)}<View className="card-detail__manage-divider" /><Text onClick={() => void handleManageAction('取消')}>取消</Text></View></View>}
     </View>
   )
 }

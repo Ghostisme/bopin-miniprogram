@@ -58,12 +58,25 @@ export async function updateResume(resume: Resume): Promise<UserProfile> {
   })
 }
 
+function mockProfileWithCards(anchorCards: AnchorCard[]): Promise<UserProfile> {
+  const primary = anchorCards.find((item) => item.isPrimary) ?? anchorCards[0]
+  const normalizedCards = primary && !primary.isPrimary
+    ? anchorCards.map((item, index) => ({ ...item, isPrimary: index === 0 }))
+    : anchorCards
+  const normalizedPrimary = normalizedCards.find((item) => item.isPrimary) ?? null
+  MOCK_USER.anchorCards = normalizedCards
+  MOCK_USER.anchorCard = normalizedPrimary
+  MOCK_USER.cardCompleted = normalizedCards.length > 0
+  return mockResponse({ ...MOCK_USER, anchorCards: normalizedCards, anchorCard: normalizedPrimary, cardCompleted: normalizedCards.length > 0 })
+}
+
 /** 新建主播模卡。一个主播最多维护五张，以便面向不同品类展示作品。 */
 export async function createAnchorCard(card: AnchorCard): Promise<UserProfile> {
   if (USE_MOCK) {
+    if ((MOCK_USER.anchorCards ?? []).length >= 5) return Promise.reject(new Error('最多创建 5 张模卡，请删除不再使用的模卡后再创建'))
     const created = { ...card, id: `card_${Date.now()}`, isPrimary: !MOCK_USER.anchorCards?.length }
     const anchorCards = [...(MOCK_USER.anchorCards ?? []), created]
-    return mockResponse({ ...MOCK_USER, anchorCards, anchorCard: anchorCards.find((item) => item.isPrimary) ?? created, cardCompleted: true })
+    return mockProfileWithCards(anchorCards)
   }
   return request<UserProfile>({
     url: '/users/me/cards',
@@ -77,7 +90,7 @@ export async function updateAnchorCard(card: AnchorCard): Promise<UserProfile> {
   if (!card.id) return createAnchorCard(card)
   if (USE_MOCK) {
     const anchorCards = (MOCK_USER.anchorCards ?? []).map((item) => item.id === card.id ? { ...item, ...card } : item)
-    return mockResponse({ ...MOCK_USER, anchorCards, anchorCard: anchorCards.find((item) => item.isPrimary) ?? anchorCards[0] ?? null, cardCompleted: anchorCards.length > 0 })
+    return mockProfileWithCards(anchorCards)
   }
   return request<UserProfile>({
     url: `/users/me/cards/${card.id}`,
@@ -90,7 +103,7 @@ export async function updateAnchorCard(card: AnchorCard): Promise<UserProfile> {
 export async function setPrimaryAnchorCard(cardId: string): Promise<UserProfile> {
   if (USE_MOCK) {
     const anchorCards = (MOCK_USER.anchorCards ?? []).map((item) => ({ ...item, isPrimary: item.id === cardId }))
-    return mockResponse({ ...MOCK_USER, anchorCards, anchorCard: anchorCards.find((item) => item.isPrimary) ?? null, cardCompleted: anchorCards.length > 0 })
+    return mockProfileWithCards(anchorCards)
   }
   return request<UserProfile>({ url: `/users/me/cards/${cardId}/primary`, method: 'POST' })
 }
@@ -99,9 +112,7 @@ export async function setPrimaryAnchorCard(cardId: string): Promise<UserProfile>
 export async function deleteAnchorCard(cardId: string): Promise<UserProfile> {
   if (USE_MOCK) {
     const anchorCards = (MOCK_USER.anchorCards ?? []).filter((item) => item.id !== cardId)
-    const hasPrimary = anchorCards.some((item) => item.isPrimary)
-    const normalizedCards = hasPrimary || !anchorCards.length ? anchorCards : anchorCards.map((item, index) => ({ ...item, isPrimary: index === 0 }))
-    return mockResponse({ ...MOCK_USER, anchorCards: normalizedCards, anchorCard: normalizedCards.find((item) => item.isPrimary) ?? null, cardCompleted: normalizedCards.length > 0 })
+    return mockProfileWithCards(anchorCards)
   }
   return request<UserProfile>({ url: `/users/me/cards/${cardId}`, method: 'DELETE' })
 }

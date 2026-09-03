@@ -3,9 +3,9 @@
  * 每一步都只写入本地草稿，最后一步统一保存，避免上传作品后卡在半成品页面。
  */
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Image, Input, ScrollView, Text, Textarea, Video, View } from '@tarojs/components'
-import Taro, { useDidShow } from '@tarojs/taro'
+import Taro, { useDidShow, useLoad } from '@tarojs/taro'
 import type { AnchorCard, UserProfile } from '@/types'
 import { fetchUserProfile, updateAnchorCard, uploadCardMedia } from '@/services'
 import { getStorage, setActiveRole, tokenKeyForRole } from '@/utils/storage'
@@ -106,6 +106,13 @@ export default function CardBuilderPage() {
   const [educationPickerVisible, setEducationPickerVisible] = useState(false)
   const [noticePromptVisible, setNoticePromptVisible] = useState(false)
   const [noticePreferences, setNoticePreferences] = useState([false, false, false])
+  const editCardIdRef = useRef('')
+
+  useLoad(({ id, step: requestedStep }) => {
+    editCardIdRef.current = String(id || '')
+    const stepValue = Number(requestedStep)
+    if (Number.isInteger(stepValue) && stepValue >= 0 && stepValue < STEPS.length) setStep(stepValue)
+  })
 
   useDidShow(async () => {
     setActiveRole('anchor')
@@ -115,7 +122,9 @@ export default function CardBuilderPage() {
     }
     try {
       const user = await fetchUserProfile()
-      setDraft((current) => current.stageName ? current : newDraft(user))
+      const cards = user.anchorCards?.length ? user.anchorCards : user.anchorCard ? [user.anchorCard] : []
+      const selectedCard = editCardIdRef.current ? cards.find((card) => card.id === editCardIdRef.current) : undefined
+      setDraft((current) => selectedCard ? { ...newDraft(user), ...selectedCard } : current.stageName ? current : newDraft(user))
     } catch {
       Taro.showToast({ title: '登录已失效，请重新登录', icon: 'none' })
     } finally {

@@ -845,8 +845,11 @@
   &__showcase.is-complete { padding: 0; border: 0; border-radius: 0; background: transparent; }
   &__complete-heading { display: flex; align-items: center; justify-content: space-between; padding: 0 24rpx 20rpx; }
   &__complete-heading .mine-page__section-title { font-size: 30rpx; font-weight: 800; }
+  &__card-count { margin-left: 6rpx; color: $text-tertiary; font-size: 20rpx; font-weight: 500; }
   &__complete-heading-actions { display: flex; align-items: center; gap: 18rpx; }
   &__detail-link { color: $secondary; font-size: 22rpx; }
+  &__edit-link { color: $secondary; font-size: 22rpx; }
+  &__delete-link { color: #c86b80; font-size: 22rpx; }
   &__new-link { color: $secondary; font-size: 22rpx; }
   &__compact-card { display: flex; min-height: 180rpx; padding: 0 24rpx 18rpx; }
   &__compact-card-cover { width: 136rpx; height: 180rpx; flex: 0 0 auto; border-radius: 8rpx; background: #f2ebed; }
