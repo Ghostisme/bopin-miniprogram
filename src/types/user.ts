@@ -99,6 +99,8 @@ export interface AnchorCard {
   recordingUrl?: string
   /** 多段直播录屏地址，第一段作为主录屏 */
   recordingClips?: string[]
+  /** 多段直播录屏对应的产品/切片标题 */
+  recordingTitles?: string[]
   /** 加入的主播群名称 */
   groupName?: string
   /** 主播群副标题 */

@@ -19,6 +19,7 @@
 .card-builder__media-item video { display: block; width: 100%; height: 330rpx; background: #111; }
 .card-builder__media-title { display: block; box-sizing: border-box; width: calc(100% - 32rpx); margin: 0 16rpx; padding: 18rpx 0; border-bottom: 1rpx solid $border-light; color: $text-primary; font-size: 25rpx; text-align: center; }
 .card-builder__media-actions { display: flex; flex-direction: row-reverse; justify-content: space-between; padding: 14rpx 18rpx; color: $secondary; font-size: 22rpx; }
+.card-builder__media-actions .is-cover { color: $success; }
 .card-builder__upload { display: flex; min-height: 150rpx; align-items: center; padding: 20rpx; border: 1rpx solid $border-light; border-radius: $radius-md; background: #fff; }
 .card-builder__upload-plus { display: flex; width: 104rpx; height: 112rpx; align-items: center; justify-content: center; margin-right: 20rpx; border-radius: $radius-sm; background: #f0f2f7; color: $secondary; font-size: 50rpx; }
 .card-builder__upload > view text { display: block; margin: 6rpx 0; color: $text-secondary; font-size: 22rpx; line-height: 1.5; }

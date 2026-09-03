@@ -46,6 +46,7 @@ const newDraft = (user?: UserProfile): AnchorCard => ({
   coverImage: cardCover,
   clips: [],
   recordingClips: [],
+  recordingTitles: [],
 })
 
 export default function CardBuilderPage() {
@@ -73,6 +74,7 @@ export default function CardBuilderPage() {
   })
 
   const recordingClips = draft.recordingClips || (draft.recordingUrl ? [draft.recordingUrl] : [])
+  const recordingTitles = draft.recordingTitles || []
   const selectedCategories = useMemo(() => new Set(draft.categories), [draft.categories])
 
   const update = <K extends keyof AnchorCard>(key: K, value: AnchorCard[K]) => {
@@ -87,7 +89,7 @@ export default function CardBuilderPage() {
       Taro.showLoading({ title: '录屏上传中' })
       const url = await uploadCardMedia(result.tempFilePath)
       const nextClips = [...recordingClips, url]
-      setDraft((current) => ({ ...current, recordingUrl: current.recordingUrl || url, recordingClips: nextClips }))
+      setDraft((current) => ({ ...current, recordingUrl: current.recordingUrl || url, recordingClips: nextClips, recordingTitles: [...(current.recordingTitles || []), ''] }))
       Taro.showToast({ title: '录屏已添加', icon: 'success' })
     } catch {
       // 取消选择或上传失败时保留当前草稿，服务层已展示具体原因。
@@ -99,8 +101,17 @@ export default function CardBuilderPage() {
 
   const removeRecording = (index: number) => {
     const nextClips = recordingClips.filter((_, itemIndex) => itemIndex !== index)
-    setDraft((current) => ({ ...current, recordingUrl: nextClips[0] || '', recordingClips: nextClips }))
+    const nextTitles = recordingTitles.filter((_, itemIndex) => itemIndex !== index)
+    setDraft((current) => ({ ...current, recordingUrl: nextClips[0] || '', recordingClips: nextClips, recordingTitles: nextTitles, coverImage: current.coverImage === recordingClips[index] ? (nextClips[0] || cardCover) : current.coverImage }))
   }
+
+  const updateRecordingTitle = (index: number, title: string) => {
+    const nextTitles = [...recordingTitles]
+    nextTitles[index] = title
+    update('recordingTitles', nextTitles)
+  }
+
+  const chooseCover = (index: number) => update('coverImage', recordingClips[index])
 
   const toggleCategory = (category: string) => {
     const next = selectedCategories.has(category) ? draft.categories.filter((item) => item !== category) : [...draft.categories, category]
@@ -150,7 +161,7 @@ export default function CardBuilderPage() {
       <View className="card-builder__nav"><Text onClick={() => step > 0 ? setStep((current) => current - 1) : Taro.navigateBack()}>‹</Text><Text>创建模卡</Text><Text className="card-builder__nav-count">{step + 1}/{STEPS.length}</Text></View>
       <View className="card-builder__progress">{STEPS.map((label, index) => <View key={label} className={`card-builder__progress-item ${index <= step ? 'is-active' : ''}`}><Text>{index + 1}</Text><Text>{label}</Text></View>)}</View>
 
-      {step === 0 && <RecordingStep clips={recordingClips} uploading={uploading} onUpload={uploadRecording} onRemove={removeRecording} />}
+      {step === 0 && <RecordingStep clips={recordingClips} titles={recordingTitles} coverImage={draft.coverImage || ''} uploading={uploading} onUpload={uploadRecording} onRemove={removeRecording} onTitle={updateRecordingTitle} onCover={chooseCover} />}
       {step === 1 && <BasicStep draft={draft} update={update} />}
       {step === 2 && <BodyStep draft={draft} update={update} onEducation={cycleEducation} />}
       {step === 3 && <IntentStep draft={draft} update={update} cityPickerVisible={cityPickerVisible} onCityPicker={() => setCityPickerVisible((visible) => !visible)} onCity={toggleCity} onCategory={toggleCategory} />}
@@ -161,14 +172,14 @@ export default function CardBuilderPage() {
   )
 }
 
-function RecordingStep({ clips, uploading, onUpload, onRemove }: { clips: string[]; uploading: boolean; onUpload: () => void; onRemove: (index: number) => void }) {
+function RecordingStep({ clips, titles, coverImage, uploading, onUpload, onRemove, onTitle, onCover }: { clips: string[]; titles: string[]; coverImage: string; uploading: boolean; onUpload: () => void; onRemove: (index: number) => void; onTitle: (index: number, title: string) => void; onCover: (index: number) => void }) {
   return <View className="card-builder__content">
     <Text className="card-builder__eyebrow">作品先行</Text>
     <Text className="card-builder__title">上传录屏，更容易获得企业青睐</Text>
     <Text className="card-builder__description">录屏是企业最关注的资料，建议提供多个风格和品类。</Text>
     <View className="card-builder__notice">注：请勿乱传，也不要上传简历，会被封号</View>
     <View className="card-builder__media-list">
-      {clips.map((clip, index) => <View className="card-builder__media-item" key={`${clip}-${index}`}><Video src={clip} controls={false} showCenterPlayBtn={false} /><Input className="card-builder__media-title" placeholder="请填写直播产品名称" /><View className="card-builder__media-actions"><Text onClick={() => onRemove(index)}>删除</Text><Text>{index === 0 ? '主录屏' : `录屏 ${index + 1}`}</Text></View></View>)}
+      {clips.map((clip, index) => <View className="card-builder__media-item" key={`${clip}-${index}`}><Video src={clip} controls={false} showCenterPlayBtn={false} /><Input className="card-builder__media-title" value={titles[index] || ''} placeholder="请填写直播产品名称" onInput={(event) => onTitle(index, event.detail.value)} /><View className="card-builder__media-actions"><Text onClick={() => onRemove(index)}>删除</Text><Text className={coverImage === clip ? 'is-cover' : ''} onClick={() => onCover(index)}>{coverImage === clip ? '已选封面' : '选为封面'}</Text></View></View>)}
       <View className="card-builder__upload" onClick={onUpload}><Text className="card-builder__upload-plus">＋</Text><View><Text>{uploading ? '正在上传，请稍候' : '上传直播录屏'}</Text><Text>视频不能超过300M，时长不能超过10分钟</Text><Text>支持相册或拍摄，可添加多段录屏</Text></View></View>
     </View>
   </View>
