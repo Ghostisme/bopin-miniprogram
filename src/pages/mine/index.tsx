@@ -71,7 +71,7 @@ export default function MinePage() {
   useDidShow(async () => {
     setActiveRole('anchor')
     if (!getStorage<string | undefined>(tokenKeyForRole('anchor'), undefined)) {
-      Taro.redirectTo({ url: '/pages/role-login/index?role=anchor' })
+      Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=anchor' })
       return
     }
     setLoading(true)
@@ -82,7 +82,7 @@ export default function MinePage() {
       const primaryCard = cards.find((card) => card.isPrimary) ?? cards[0]
       if (primaryCard) setCardDraft(normalizeCard(primaryCard))
     } catch {
-      Taro.redirectTo({ url: '/pages/role-login/index?role=anchor' })
+      Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=anchor' })
     } finally {
       setLoading(false)
     }
@@ -124,7 +124,7 @@ export default function MinePage() {
 
   const openCardDetails = (card: AnchorCard) => {
     const query = card.id ? `?id=${encodeURIComponent(card.id)}` : ''
-    Taro.navigateTo({ url: `/pages/card-detail/index${query}` })
+    Taro.navigateTo({ url: `/subpages/feature/card-detail/index${query}` })
   }
 
   const openCreateSheet = () => {
@@ -138,7 +138,7 @@ export default function MinePage() {
   const chooseRecording = async () => {
     setCreateSheetVisible(false)
     if (!editingCard) {
-      Taro.navigateTo({ url: '/pages/card-builder/index' })
+      Taro.navigateTo({ url: '/subpages/feature/card-builder/index' })
       return
     }
     try {
@@ -186,8 +186,8 @@ export default function MinePage() {
 
   const switchToMerchant = () => {
     setActiveRole('merchant')
-    if (getStorage<string | undefined>(tokenKeyForRole('merchant'), undefined)) Taro.navigateTo({ url: '/pages/my-notices/index' })
-    else Taro.navigateTo({ url: '/pages/role-login/index?role=merchant' })
+    if (getStorage<string | undefined>(tokenKeyForRole('merchant'), undefined)) Taro.navigateTo({ url: '/subpages/feature/my-notices/index' })
+    else Taro.navigateTo({ url: '/subpages/feature/role-login/index?role=merchant' })
   }
 
   const copyCardInfo = async () => {
@@ -367,7 +367,7 @@ export default function MinePage() {
 
       {/* 主播个人服务入口 */}
       <View className="mine-page__menu">
-        <View className="mine-page__menu-item" onClick={() => Taro.navigateTo({ url: '/pages/services/index' })}>
+        <View className="mine-page__menu-item" onClick={() => Taro.navigateTo({ url: '/subpages/feature/services/index' })}>
           <Text className="mine-page__menu-text">联系微信号</Text>
           <Text className="mine-page__menu-arrow">›</Text>
         </View>

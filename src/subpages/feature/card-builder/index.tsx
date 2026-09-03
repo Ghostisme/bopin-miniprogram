@@ -118,7 +118,7 @@ export default function CardBuilderPage() {
   useDidShow(async () => {
     setActiveRole('anchor')
     if (!getStorage<string | undefined>(tokenKeyForRole('anchor'), undefined)) {
-      Taro.redirectTo({ url: '/pages/role-login/index?role=anchor' })
+      Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=anchor' })
       return
     }
     try {

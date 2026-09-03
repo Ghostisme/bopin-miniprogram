@@ -31,7 +31,7 @@ export default function RoleLoginPage() {
       setActiveRole(role)
       Taro.showToast({ title: '登录成功', icon: 'success' })
       setTimeout(() => {
-        if (role === 'merchant') Taro.redirectTo({ url: '/pages/my-notices/index' })
+        if (role === 'merchant') Taro.redirectTo({ url: '/subpages/feature/my-notices/index' })
         else Taro.switchTab({ url: '/pages/notice/index' })
       }, 350)
       return session

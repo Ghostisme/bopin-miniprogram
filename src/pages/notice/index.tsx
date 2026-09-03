@@ -42,16 +42,16 @@ export default function NoticePage() {
   const goEmployerCenter = () => {
     setActiveRole('merchant')
     if (getStorage<string | undefined>(tokenKeyForRole('merchant'), undefined)) {
-      Taro.navigateTo({ url: '/pages/my-notices/index' })
+      Taro.navigateTo({ url: '/subpages/feature/my-notices/index' })
     } else {
-      Taro.navigateTo({ url: '/pages/role-login/index?role=merchant' })
+      Taro.navigateTo({ url: '/subpages/feature/role-login/index?role=merchant' })
     }
   }
 
   const goCreateNotice = () => {
     setActiveRole('merchant')
-    if (getStorage<string | undefined>(tokenKeyForRole('merchant'), undefined)) Taro.navigateTo({ url: '/pages/edit-notice/index' })
-    else Taro.navigateTo({ url: '/pages/role-login/index?role=merchant' })
+    if (getStorage<string | undefined>(tokenKeyForRole('merchant'), undefined)) Taro.navigateTo({ url: '/subpages/feature/edit-notice/index' })
+    else Taro.navigateTo({ url: '/subpages/feature/role-login/index?role=merchant' })
   }
 
   const goCreateCard = () => {

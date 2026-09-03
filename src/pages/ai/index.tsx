@@ -18,7 +18,7 @@ export default function AIPage() {
   const load = async () => {
     setActiveRole('anchor')
     if (!getStorage<string | undefined>(tokenKeyForRole('anchor'), undefined)) {
-      Taro.redirectTo({ url: '/pages/role-login/index?role=anchor' })
+      Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=anchor' })
       return
     }
     try {
@@ -27,7 +27,7 @@ export default function AIPage() {
       setHistory(scripts)
       setAccess(accessData.find((item) => item.featureKey === 'AI_SCRIPT') ?? null)
     } catch {
-      Taro.redirectTo({ url: '/pages/role-login/index?role=anchor' })
+      Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=anchor' })
     }
   }
 

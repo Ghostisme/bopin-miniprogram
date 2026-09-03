@@ -24,7 +24,7 @@ export default function CardDetailPage() {
   useLoad(async ({ id }) => {
     setActiveRole('anchor')
     if (!getStorage<string | undefined>(tokenKeyForRole('anchor'), undefined)) {
-      Taro.redirectTo({ url: '/pages/role-login/index?role=anchor' })
+      Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=anchor' })
       return
     }
     try {
@@ -33,7 +33,7 @@ export default function CardDetailPage() {
       const selected = cards.find((item) => item.id === String(id || '')) ?? cards.find((item) => item.isPrimary) ?? cards[0]
       setCard(selected || null)
     } catch {
-      Taro.redirectTo({ url: '/pages/role-login/index?role=anchor' })
+      Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=anchor' })
     } finally {
       setLoading(false)
     }
@@ -54,7 +54,7 @@ export default function CardDetailPage() {
     if (action === '编辑切片' || action === '编辑资料') {
       if (!card.id) return
       const step = action === '编辑切片' ? 0 : 1
-      Taro.navigateTo({ url: `/pages/card-builder/index?id=${encodeURIComponent(card.id)}&step=${step}` })
+      Taro.navigateTo({ url: `/subpages/feature/card-builder/index?id=${encodeURIComponent(card.id)}&step=${step}` })
       return
     }
     if (action === '设为主展示') {

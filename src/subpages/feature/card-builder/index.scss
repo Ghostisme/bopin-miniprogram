@@ -1,4 +1,4 @@
-@import '../../styles/variables.scss';
+@import '../../../styles/variables.scss';
 
 .card-builder { min-height: 100vh; padding-bottom: 150rpx; background: #f5f6fa; color: $text-primary; }
 .card-builder__nav { display: flex; height: 92rpx; align-items: center; justify-content: space-between; padding: 0 28rpx; background: #fff; border-bottom: 1rpx solid $border-light; font-size: 30rpx; }

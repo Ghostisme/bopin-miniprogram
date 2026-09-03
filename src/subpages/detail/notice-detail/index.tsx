@@ -48,7 +48,7 @@ export default function NoticeDetailPage() {
   const handleContact = () => {
     setActiveRole('anchor')
     if (!getStorage<string | undefined>(tokenKeyForRole('anchor'), undefined)) {
-      Taro.navigateTo({ url: '/pages/role-login/index?role=anchor' })
+      Taro.navigateTo({ url: '/subpages/feature/role-login/index?role=anchor' })
       return
     }
     Taro.switchTab({ url: '/pages/message/index' })

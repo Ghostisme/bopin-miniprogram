@@ -28,7 +28,7 @@ export default function TalentsPage() {
     try {
       setList(await fetchTalents(next))
     } catch {
-      Taro.redirectTo({ url: '/pages/role-login/index?role=merchant' })
+      Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=merchant' })
     } finally {
       setLoading(false)
     }
@@ -37,7 +37,7 @@ export default function TalentsPage() {
   useDidShow(() => {
     setActiveRole('merchant')
     if (!getStorage<string | undefined>(tokenKeyForRole('merchant'), undefined)) {
-      Taro.redirectTo({ url: '/pages/role-login/index?role=merchant' })
+      Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=merchant' })
       return
     }
     load()
@@ -60,7 +60,7 @@ export default function TalentsPage() {
       <View className="talents-page__header">
         <Text className="talents-page__back" onClick={() => Taro.navigateBack()}>‹</Text>
         <View><Text className="talents-page__eyebrow">企业端</Text><Text className="talents-page__title">主播模卡库</Text></View>
-        <Text className="talents-page__notices" onClick={() => Taro.redirectTo({ url: '/pages/my-notices/index' })}>通告管理</Text>
+        <Text className="talents-page__notices" onClick={() => Taro.redirectTo({ url: '/subpages/feature/my-notices/index' })}>通告管理</Text>
       </View>
 
       <View className="talents-page__search-row">
@@ -87,7 +87,7 @@ export default function TalentsPage() {
       <View className="talents-page__list">
         {list.map((talent, index) => {
           const card = talent.anchorCard
-          return <View className="talents-page__card" key={talent.id} onClick={() => Taro.navigateTo({ url: `/pages/talent-detail/index?id=${talent.id}` })}>
+          return <View className="talents-page__card" key={talent.id} onClick={() => Taro.navigateTo({ url: `/subpages/feature/talent-detail/index?id=${talent.id}` })}>
             <Image src={safeImageSource(card.coverImage, TALENT_IMAGES[index % TALENT_IMAGES.length])} mode="aspectFill" />
             <View className="talents-page__card-main">
               <View className="talents-page__card-head"><Text>{card.stageName || talent.nickname}</Text><Text>{talent.activeLabel}</Text></View>

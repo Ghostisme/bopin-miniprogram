@@ -24,7 +24,7 @@ export default function MessagePage() {
   useDidShow(async () => {
     setActiveRole('anchor')
     if (!getStorage<string | undefined>(tokenKeyForRole('anchor'), undefined)) {
-      Taro.redirectTo({ url: '/pages/role-login/index?role=anchor' })
+      Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=anchor' })
       return
     }
     setLoading(true)
@@ -33,7 +33,7 @@ export default function MessagePage() {
       setQuota(q)
       setList(c)
     } catch {
-      Taro.redirectTo({ url: '/pages/role-login/index?role=anchor' })
+      Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=anchor' })
     } finally {
       setLoading(false)
     }
@@ -43,7 +43,7 @@ export default function MessagePage() {
    * 点击会话项，跳转到聊天页面
    */
   const handleConversationClick = (conversationId: string) => {
-    Taro.navigateTo({ url: `/pages/chat/index?id=${conversationId}` })
+    Taro.navigateTo({ url: `/subpages/feature/chat/index?id=${conversationId}` })
   }
 
   return (

@@ -40,7 +40,7 @@ export default function ChatPage() {
       const data = await fetchChatMessages(conversationId)
       setMessages(data)
     } catch {
-      Taro.redirectTo({ url: '/pages/role-login/index?role=anchor' })
+      Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=anchor' })
     } finally {
       setLoading(false)
     }
@@ -50,7 +50,7 @@ export default function ChatPage() {
   useEffect(() => {
     setActiveRole('anchor')
     if (!getStorage<string | undefined>(tokenKeyForRole('anchor'), undefined)) {
-      Taro.redirectTo({ url: '/pages/role-login/index?role=anchor' })
+      Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=anchor' })
       return
     }
     loadMessages()

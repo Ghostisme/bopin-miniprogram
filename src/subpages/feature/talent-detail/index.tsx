@@ -25,7 +25,7 @@ export default function TalentDetailPage() {
     try {
       setTalent(await fetchTalentById(String(id || '')))
     } catch {
-      Taro.redirectTo({ url: '/pages/role-login/index?role=merchant' })
+      Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=merchant' })
     } finally {
       setLoading(false)
     }
@@ -60,7 +60,7 @@ export default function TalentDetailPage() {
       <Section title="Peak GMV 最高单场"><Text className="talent-detail__gmv">{card.peakGmv || '面议'}</Text></Section>
       <Section title="Advantage 自身优势"><Text className="talent-detail__advantage">{card.advantage || card.intro}</Text></Section>
 
-      <View className="talent-detail__actions"><Text onClick={() => Taro.showToast({ title: '分享卡片已生成', icon: 'success' })}>分享</Text><Text onClick={() => Taro.navigateTo({ url: '/pages/chat/index?id=c_1001' })}>立即联系</Text></View>
+      <View className="talent-detail__actions"><Text onClick={() => Taro.showToast({ title: '分享卡片已生成', icon: 'success' })}>分享</Text><Text onClick={() => Taro.navigateTo({ url: '/subpages/feature/chat/index?id=c_1001' })}>立即联系</Text></View>
     </View>
   )
 }

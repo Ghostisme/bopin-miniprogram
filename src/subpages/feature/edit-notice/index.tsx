@@ -64,7 +64,7 @@ export default function EditNoticePage() {
 
   useEffect(() => {
     setActiveRole('merchant')
-    if (!getStorage<string | undefined>(tokenKeyForRole('merchant'), undefined)) Taro.redirectTo({ url: '/pages/role-login/index?role=merchant' })
+    if (!getStorage<string | undefined>(tokenKeyForRole('merchant'), undefined)) Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=merchant' })
   }, [])
 
   // 编辑模式：加载已有数据

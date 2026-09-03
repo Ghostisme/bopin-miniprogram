@@ -4,18 +4,24 @@ export default defineAppConfig({
     'pages/ai/index',
     'pages/message/index',
     'pages/mine/index',
-    'pages/my-notices/index',
-    'pages/edit-notice/index',
-    'pages/chat/index',
-    'pages/services/index',
-    'pages/role-login/index',
-    'pages/card-builder/index',
-    'pages/card-detail/index',
-    'pages/talents/index',
-    'pages/talent-detail/index',
   ],
-  // 分包配置:详情页和个人中心相关页面分离,主包体积控制在 1.5M 以内
+  // TabBar 页面留在主包，其余低频页面拆分，避免超过微信主包 2MB 限制。
   subPackages: [
+    {
+      root: 'subpages/feature',
+      pages: [
+        'my-notices/index',
+        'edit-notice/index',
+        'chat/index',
+        'services/index',
+        'role-login/index',
+        'card-builder/index',
+        'card-detail/index',
+        'talents/index',
+        'talent-detail/index',
+      ],
+      name: 'feature',
+    },
     {
       root: 'subpages/detail',
       pages: ['notice-detail/index'],

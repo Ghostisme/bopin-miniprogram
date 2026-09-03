@@ -42,7 +42,7 @@ export default function MyNoticesPage() {
       const data = await fetchMyNotices(status === 'all' ? undefined : status)
       setList(data)
     } catch {
-      Taro.redirectTo({ url: '/pages/role-login/index?role=merchant' })
+      Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=merchant' })
     } finally {
       setLoading(false)
     }
@@ -52,7 +52,7 @@ export default function MyNoticesPage() {
   useDidShow(() => {
     setActiveRole('merchant')
     if (!getStorage<string | undefined>(tokenKeyForRole('merchant'), undefined)) {
-      Taro.redirectTo({ url: '/pages/role-login/index?role=merchant' })
+      Taro.redirectTo({ url: '/subpages/feature/role-login/index?role=merchant' })
       return
     }
     loadList(activeTab)
@@ -74,7 +74,7 @@ export default function MyNoticesPage() {
   const handleCardClick = (notice: MyNotice) => {
     // 草稿状态跳转编辑页，其他状态跳转详情页
     if (notice.status === 'draft') {
-      Taro.navigateTo({ url: `/pages/edit-notice/index?id=${notice.id}` })
+      Taro.navigateTo({ url: `/subpages/feature/edit-notice/index?id=${notice.id}` })
     } else {
       Taro.navigateTo({ url: `/subpages/detail/notice-detail/index?id=${notice.id}` })
     }
@@ -84,7 +84,7 @@ export default function MyNoticesPage() {
    * 创建新通告
    */
   const handleCreate = () => {
-    Taro.navigateTo({ url: '/pages/edit-notice/index' })
+    Taro.navigateTo({ url: '/subpages/feature/edit-notice/index' })
   }
 
   const switchToAnchor = () => {
@@ -100,7 +100,7 @@ export default function MyNoticesPage() {
           <Text className="my-notices-page__identity-title">我的通告</Text>
         </View>
         <View className="my-notices-page__identity-actions">
-          <Text className="my-notices-page__talents-link" onClick={() => Taro.navigateTo({ url: '/pages/talents/index' })}>主播库</Text>
+          <Text className="my-notices-page__talents-link" onClick={() => Taro.navigateTo({ url: '/subpages/feature/talents/index' })}>主播库</Text>
           <Text className="my-notices-page__switch-role" onClick={switchToAnchor}>切换主播端</Text>
         </View>
       </View>
