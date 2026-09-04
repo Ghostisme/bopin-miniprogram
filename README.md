@@ -18,6 +18,8 @@ npm run dev:h5
 
 H5 默认访问 `http://localhost:10086/`。小程序请求默认连接 `http://localhost:8080/api/v1`，需要先启动 `bopin-admin-service`。
 
+岗位通告列表使用 Java 服务的分页接口 `GET /api/v1/notices?page=1&pageSize=20`；页面通过 `fetchNoticesPage` 读取当前页，旧页面调用 `fetchNotices` 时仍会自动解包 `items`，不会再一次性加载整张岗位表。登录/注册返回的 JWT 会按当前身份保存在本地，后续需要登录的请求自动发送 `Authorization: Bearer <token>`。
+
 ## API 地址
 
 开发者工具本机调试可直接使用 localhost。真机调试和上线时不能把 localhost 配进小程序，请在构建前指定已备案的 HTTPS 域名：

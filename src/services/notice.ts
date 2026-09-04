@@ -63,19 +63,44 @@ function applySort(list: Notice[], sort: NoticeSort): Notice[] {
  * @param filter 筛选条件，默认空对象（即不限，取全部）
  * @returns 过滤 + 排序后的通告列表
  */
-export function fetchNotices(filter: NoticeFilter = {}): Promise<Notice[]> {
+export interface NoticePageResult {
+  page: number
+  pageSize: number
+  size: number
+  total: number
+  totalPages: number
+  hasNext: boolean
+  items: Notice[]
+}
+
+type NoticePageFilter = NoticeFilter & { page?: number; pageSize?: number }
+
+/** 获取服务端分页结果；首页列表只取当前页，避免一次加载全部岗位。 */
+export function fetchNoticesPage(filter: NoticePageFilter = {}): Promise<NoticePageResult> {
   if (!USE_MOCK) {
-    // 真实接口：过滤/排序交由服务端处理，前端只透传筛选条件
-    return request<Notice[]>({
+    return request<NoticePageResult | Notice[]>({
       url: '/notices',
-      data: { ...filter },
+      data: { ...filter, page: filter.page ?? 1, pageSize: filter.pageSize ?? 20 },
       auth: false,
+    }).then((response) => {
+      // 兼容旧服务短暂返回数组的情况，正式 Java 服务返回分页对象。
+      if (Array.isArray(response)) {
+        return { page: 1, pageSize: response.length, size: response.length, total: response.length, totalPages: response.length ? 1 : 0, hasNext: false, items: response }
+      }
+      return response
     })
   }
+  const page = Math.max(1, filter.page ?? 1)
+  const pageSize = Math.max(1, Math.min(100, filter.pageSize ?? 20))
   const sort = filter.sort ?? 'recommend'
-  const filtered = applyFilter(MOCK_NOTICES, filter)
-  const sorted = applySort(filtered, sort)
-  return mockResponse(sorted)
+  const sorted = applySort(applyFilter(MOCK_NOTICES, filter), sort)
+  const items = sorted.slice((page - 1) * pageSize, page * pageSize)
+  const totalPages = sorted.length ? Math.ceil(sorted.length / pageSize) : 0
+  return mockResponse({ page, pageSize, size: pageSize, total: sorted.length, totalPages, hasNext: page < totalPages, items })
+}
+
+export function fetchNotices(filter: NoticeFilter = {}): Promise<Notice[]> {
+  return fetchNoticesPage(filter).then((page) => page.items)
 }
 
 /**
