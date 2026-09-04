@@ -9,6 +9,10 @@ export type UserRole = 'anchor' | 'merchant'
 
 export interface AuthSession {
   token: string
+  /** 标准 Bearer token 类型；离线 mock 可能不返回。 */
+  tokenType?: 'Bearer'
+  /** token 有效期（秒）；离线 mock 可能不返回。 */
+  expiresIn?: number
   role: UserRole
   user: UserProfile
 }
